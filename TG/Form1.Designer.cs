@@ -68,10 +68,12 @@
             // 
             // SearchByName
             // 
+            this.SearchByName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.SearchByName.Location = new System.Drawing.Point(623, 12);
             this.SearchByName.Name = "SearchByName";
             this.SearchByName.Size = new System.Drawing.Size(191, 20);
             this.SearchByName.TabIndex = 2;
+            this.SearchByName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SearchByName_KeyUp);
             // 
             // ZoomIn
             // 
@@ -221,6 +223,7 @@
             this.Controls.Add(this.Map);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.Map)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).EndInit();
             this.ResumeLayout(false);

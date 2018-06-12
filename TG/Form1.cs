@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,14 +24,15 @@ namespace TG
         bool showBuilding = false;
         bool showRailways = false;
         bool showLandmarks = false;
-
+        static List<String> tables = new List<string>(new string[] {"places", "buildings","points", "landuse", "roads", } );
+        AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
 
 
         public Form1()
         {
             InitializeComponent();
             _sharpMap = new SharpMap.Map(new Size(802, 362));
-            _sharpMap.BackColor = Color.FromArgb(232,232,232);
+            _sharpMap.BackColor = Color.FromArgb(232, 232, 232);
 
             SharpMap.Layers.VectorLayer landuseLayer = new SharpMap.Layers.VectorLayer("Landuse");
             landuseLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "landuse", geomname, idname);
@@ -66,9 +69,11 @@ namespace TG
             buildingsLayer.Style.Outline = Pens.Green;
             buildingsLayer.Enabled = false;
             _sharpMap.Layers.Add(buildingsLayer);
-            
+
             SharpMap.Layers.VectorLayer railwaysLayer = new SharpMap.Layers.VectorLayer("Railways");
             railwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "railways", geomname, idname);
+            railwaysLayer.Style.Line.Width = 1;
+            railwaysLayer.Style.Line.Color = Color.DarkGray;
             railwaysLayer.Enabled = false;
             _sharpMap.Layers.Add(railwaysLayer);
 
@@ -76,8 +81,8 @@ namespace TG
             pointsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "points", geomname, idname);
             pointsLayer.LabelColumn = "name";
             pointsLayer.Style.CollisionDetection = true;
-            pointsLayer.Style.CollisionBuffer = new SizeF(25, 25);
-            pointsLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.First;
+            pointsLayer.Style.CollisionBuffer = new SizeF(50, 50);
+            pointsLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.Largest;
             pointsLayer.Style.Font = new Font(FontFamily.GenericSansSerif, 8);
             pointsLayer.Enabled = false;
             _sharpMap.Layers.Add(pointsLayer);
@@ -88,7 +93,7 @@ namespace TG
 
         }
 
-        
+
 
         private void ZoomIn_Click(object sender, EventArgs e)
         {
@@ -112,7 +117,7 @@ namespace TG
                 _sharpMap.Zoom = _sharpMap.Zoom * ZOOM_FACTOR;
                 Map.Image = _sharpMap.GetMap();
             }
-            
+
         }
 
         private void ZoomOut_Click(object sender, EventArgs e)
@@ -135,10 +140,10 @@ namespace TG
                 _sharpMap.Zoom = _sharpMap.Zoom / ZOOM_FACTOR;
                 Map.Image = _sharpMap.GetMap();
             }
-            
+
         }
 
-        
+
 
         private void Map_MouseClick(object sender, MouseEventArgs e)
         {
@@ -174,7 +179,7 @@ namespace TG
                 }
             }
         }
-        
+
 
         private void Railways_CheckedChanged(object sender, EventArgs e)
         {
@@ -186,7 +191,7 @@ namespace TG
                     showRailways = true;
                     railways_Layer.Enabled = true;
                     Map.Image = _sharpMap.GetMap();
-                    
+
                 }
                 else
                 {
@@ -222,5 +227,49 @@ namespace TG
                 }
             }
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SearchByName_KeyUp(object sender, KeyEventArgs e)
+        {
+            List<string> list = new List<string>();
+            string queryString1 = "select name from ";
+            string queryString2 = " where upper(name) like upper('" + SearchByName.Text + "%') or upper(name) like upper('" + LaToCy.LaToCyConverter.Translit(SearchByName.Text) + "%');";
+            int i = 0;
+            int totalCount = 0;
+
+            using (var connection = new NpgsqlConnection(connString))
+            {
+
+                connection.Open();
+                while (totalCount < 10 && i < tables.Count())
+                {
+
+                    var command = new NpgsqlCommand(queryString1 + tables[i] + queryString2, connection);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (totalCount<10 && reader.Read())
+                        {
+                            list.Add(reader[0].ToString());
+                            totalCount ++;
+                        }
+                    }
+                    ++i;
+                }
+                connection.Close();
+
+                SearchByName.AutoCompleteMode = AutoCompleteMode.Suggest;
+                SearchByName.AutoCompleteSource = AutoCompleteSource.CustomSource;
+
+                allowedTypes.AddRange(list.ToArray());
+
+                SearchByName.AutoCompleteCustomSource = allowedTypes;
+            }
+       }
+
+        
     }
 }
