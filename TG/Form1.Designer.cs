@@ -40,6 +40,9 @@
             this.Search5 = new System.Windows.Forms.CheckBox();
             this.Search6 = new System.Windows.Forms.CheckBox();
             this.SearchByType = new System.Windows.Forms.TextBox();
+            this.Buildings = new System.Windows.Forms.CheckBox();
+            this.Railways = new System.Windows.Forms.CheckBox();
+            this.Points = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
@@ -163,11 +166,47 @@
             this.SearchByType.Size = new System.Drawing.Size(143, 20);
             this.SearchByType.TabIndex = 11;
             // 
+            // Buildings
+            // 
+            this.Buildings.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Buildings.Location = new System.Drawing.Point(20, 47);
+            this.Buildings.Name = "Buildings";
+            this.Buildings.Size = new System.Drawing.Size(53, 23);
+            this.Buildings.TabIndex = 12;
+            this.Buildings.Text = "Zgrade";
+            this.Buildings.UseVisualStyleBackColor = true;
+            this.Buildings.CheckedChanged += new System.EventHandler(this.Buildings_CheckedChanged);
+            // 
+            // Railways
+            // 
+            this.Railways.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Railways.Location = new System.Drawing.Point(20, 76);
+            this.Railways.Name = "Railways";
+            this.Railways.Size = new System.Drawing.Size(53, 23);
+            this.Railways.TabIndex = 13;
+            this.Railways.Text = "Pruge";
+            this.Railways.UseVisualStyleBackColor = true;
+            this.Railways.CheckedChanged += new System.EventHandler(this.Railways_CheckedChanged);
+            // 
+            // Points
+            // 
+            this.Points.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Points.Location = new System.Drawing.Point(20, 105);
+            this.Points.Name = "Points";
+            this.Points.Size = new System.Drawing.Size(53, 23);
+            this.Points.TabIndex = 14;
+            this.Points.Text = "Objekti";
+            this.Points.UseVisualStyleBackColor = true;
+            this.Points.CheckedChanged += new System.EventHandler(this.Points_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(826, 567);
+            this.Controls.Add(this.Points);
+            this.Controls.Add(this.Railways);
+            this.Controls.Add(this.Buildings);
             this.Controls.Add(this.SearchByType);
             this.Controls.Add(this.Search6);
             this.Controls.Add(this.Search5);
@@ -203,6 +242,9 @@
         private System.Windows.Forms.CheckBox Search5;
         private System.Windows.Forms.CheckBox Search6;
         private System.Windows.Forms.TextBox SearchByType;
+        private System.Windows.Forms.CheckBox Buildings;
+        private System.Windows.Forms.CheckBox Railways;
+        private System.Windows.Forms.CheckBox Points;
     }
 }
 
