@@ -43,6 +43,7 @@
             this.Buildings = new System.Windows.Forms.CheckBox();
             this.Railways = new System.Windows.Forms.CheckBox();
             this.Points = new System.Windows.Forms.CheckBox();
+            this.coordinates = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
@@ -56,6 +57,7 @@
             this.Map.TabIndex = 0;
             this.Map.TabStop = false;
             this.Map.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Map_MouseClick);
+            this.Map.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Map_MouseMove);
             // 
             // Distance
             // 
@@ -202,11 +204,22 @@
             this.Points.UseVisualStyleBackColor = true;
             this.Points.CheckedChanged += new System.EventHandler(this.Points_CheckedChanged);
             // 
+            // coordinates
+            // 
+            this.coordinates.AutoSize = true;
+            this.coordinates.Location = new System.Drawing.Point(702, 47);
+            this.coordinates.MaximumSize = new System.Drawing.Size(220, 220);
+            this.coordinates.MinimumSize = new System.Drawing.Size(100, 15);
+            this.coordinates.Name = "coordinates";
+            this.coordinates.Size = new System.Drawing.Size(100, 15);
+            this.coordinates.TabIndex = 15;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(826, 567);
+            this.Controls.Add(this.coordinates);
             this.Controls.Add(this.Points);
             this.Controls.Add(this.Railways);
             this.Controls.Add(this.Buildings);
@@ -249,6 +262,7 @@
         private System.Windows.Forms.CheckBox Buildings;
         private System.Windows.Forms.CheckBox Railways;
         private System.Windows.Forms.CheckBox Points;
+        private System.Windows.Forms.Label coordinates;
     }
 }
 

@@ -1,4 +1,7 @@
-﻿using Npgsql;
+﻿using GeoAPI.CoordinateSystems;
+using GeoAPI.CoordinateSystems.Transformations;
+using Npgsql;
+using ProjNet.CoordinateSystems.Transformations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -271,6 +274,21 @@ namespace TG
             }
        }
 
-        
+        private void Map_MouseMove(object sender, MouseEventArgs e)
+        {
+            GeoAPI.Geometries.Coordinate p = _sharpMap.ImageToWorld(new PointF(e.X, e.Y));
+            PointF pUTM = new PointF();
+
+            IProjectedCoordinateSystem utmProj = Helpers.CoordinateSystem.CreateUtmProjection(34);
+            IGeographicCoordinateSystem geoCS = utmProj.GeographicCoordinateSystem;
+            CoordinateTransformationFactory ctFac = new CoordinateTransformationFactory();
+            ICoordinateTransformation transform = ctFac.CreateFromCoordinateSystems(geoCS, utmProj);
+            double[] c = new double[2];
+            c[0] = p.X; c[1] = p.Y;
+            c = transform.MathTransform.Transform(c);
+            pUTM.X = (float)c[0]; pUTM.Y = (float)c[1];
+
+            coordinates.Text = pUTM.X + " : " + pUTM.Y;
+        }
     }
 }
