@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GdalNativeConfiguration.cs" />
+    <Compile Include="Helpers\CoordinateSystem.cs" />
     <Compile Include="LaToCy\LaToCyConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
