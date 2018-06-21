@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Npgsql;
 
 namespace TG
 {
@@ -29,7 +30,6 @@ namespace TG
         bool showLandmarks = false;
         static List<String> tables = new List<string>(new string[] {"places", "buildings","points", "landuse", "roads", } );
         AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
-
 
         public Form1()
         {
@@ -93,8 +93,8 @@ namespace TG
             _sharpMap.ZoomToExtents();
 
             Map.Image = _sharpMap.GetMap();
-            
 
+            initSearch();
         }
 
 
@@ -236,43 +236,36 @@ namespace TG
         {
 
         }
-
-        private void SearchByName_KeyUp(object sender, KeyEventArgs e)
+        private void initSearch()
         {
             string queryString1 = "select name from ";
-            string queryString2 = " where upper(name) like upper('" + SearchByName.Text + "%') or upper(name) like upper('" + LaToCy.LaToCyConverter.Translit(SearchByName.Text) + "%');";
             int i = 0;
-            int totalCount = 0;
+            List<string> list = new List<string>();
 
             using (var connection = new NpgsqlConnection(connString))
             {
 
                 connection.Open();
-                AutoCompleteStringCollection autoCol = new AutoCompleteStringCollection();
 
-                while (totalCount < 10 && i < tables.Count())
+                while (i < tables.Count())
                 {
-
-                    var command = new NpgsqlCommand(queryString1 + tables[i] + queryString2, connection);
+                    var command = new NpgsqlCommand(queryString1 + tables[i], connection);
                     using (var reader = command.ExecuteReader())
                     {
-                        while (totalCount<10 && reader.Read())
+                        while (reader.Read())
                         {
-                            autoCol.Add(reader[0].ToString());
-                            totalCount ++;
+                            list.Add(LaToCy.CyToLaConverter.Translit(reader[0].ToString()));
                         }
                     }
-                    ++i;
+                    i++;
                 }
                 connection.Close();
-
-                lock (SearchByName.AutoCompleteCustomSource.SyncRoot)
-                {
-                    SearchByName.AutoCompleteCustomSource = autoCol;
-                }
                 
             }
-       }
+            allowedTypes.AddRange(list.ToArray());
+            SearchByName.AutoCompleteCustomSource = allowedTypes;
+        }
+        
 
         private void Map_MouseMove(object sender, MouseEventArgs e)
         {

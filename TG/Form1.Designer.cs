@@ -76,7 +76,6 @@
             this.SearchByName.Name = "SearchByName";
             this.SearchByName.Size = new System.Drawing.Size(191, 20);
             this.SearchByName.TabIndex = 2;
-            this.SearchByName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SearchByName_KeyUp);
             // 
             // ZoomIn
             // 
