@@ -90,6 +90,7 @@ namespace TG
             _sharpMap.ZoomToExtents();
 
             Map.Image = _sharpMap.GetMap();
+            
 
         }
 
@@ -235,7 +236,6 @@ namespace TG
 
         private void SearchByName_KeyUp(object sender, KeyEventArgs e)
         {
-            List<string> list = new List<string>();
             string queryString1 = "select name from ";
             string queryString2 = " where upper(name) like upper('" + SearchByName.Text + "%') or upper(name) like upper('" + LaToCy.LaToCyConverter.Translit(SearchByName.Text) + "%');";
             int i = 0;
@@ -245,6 +245,8 @@ namespace TG
             {
 
                 connection.Open();
+                AutoCompleteStringCollection autoCol = new AutoCompleteStringCollection();
+
                 while (totalCount < 10 && i < tables.Count())
                 {
 
@@ -253,7 +255,7 @@ namespace TG
                     {
                         while (totalCount<10 && reader.Read())
                         {
-                            list.Add(reader[0].ToString());
+                            autoCol.Add(reader[0].ToString());
                             totalCount ++;
                         }
                     }
@@ -261,12 +263,11 @@ namespace TG
                 }
                 connection.Close();
 
-                SearchByName.AutoCompleteMode = AutoCompleteMode.Suggest;
-                SearchByName.AutoCompleteSource = AutoCompleteSource.CustomSource;
-
-                allowedTypes.AddRange(list.ToArray());
-
-                SearchByName.AutoCompleteCustomSource = allowedTypes;
+                lock (SearchByName.AutoCompleteCustomSource.SyncRoot)
+                {
+                    SearchByName.AutoCompleteCustomSource = autoCol;
+                }
+                
             }
        }
 

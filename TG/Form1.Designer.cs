@@ -68,6 +68,7 @@
             // 
             // SearchByName
             // 
+            this.SearchByName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.SearchByName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.SearchByName.Location = new System.Drawing.Point(623, 12);
             this.SearchByName.Name = "SearchByName";
