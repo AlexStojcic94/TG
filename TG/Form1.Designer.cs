@@ -44,6 +44,9 @@
             this.Railways = new System.Windows.Forms.CheckBox();
             this.Points = new System.Windows.Forms.CheckBox();
             this.coordinates = new System.Windows.Forms.Label();
+            this.searchFrom = new System.Windows.Forms.TextBox();
+            this.searchTo = new System.Windows.Forms.TextBox();
+            this.SearchRoute = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
@@ -213,11 +216,42 @@
             this.coordinates.Size = new System.Drawing.Size(100, 15);
             this.coordinates.TabIndex = 15;
             // 
+            // searchFrom
+            // 
+            this.searchFrom.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.searchFrom.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.searchFrom.Location = new System.Drawing.Point(63, 12);
+            this.searchFrom.Name = "searchFrom";
+            this.searchFrom.Size = new System.Drawing.Size(100, 20);
+            this.searchFrom.TabIndex = 16;
+            // 
+            // searchTo
+            // 
+            this.searchTo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.searchTo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.searchTo.Location = new System.Drawing.Point(196, 12);
+            this.searchTo.Name = "searchTo";
+            this.searchTo.Size = new System.Drawing.Size(100, 20);
+            this.searchTo.TabIndex = 17;
+            // 
+            // SearchRoute
+            // 
+            this.SearchRoute.Location = new System.Drawing.Point(311, 10);
+            this.SearchRoute.Name = "SearchRoute";
+            this.SearchRoute.Size = new System.Drawing.Size(75, 23);
+            this.SearchRoute.TabIndex = 18;
+            this.SearchRoute.Text = "Search";
+            this.SearchRoute.UseVisualStyleBackColor = true;
+            this.SearchRoute.Click += new System.EventHandler(this.SearchRoute_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(826, 567);
+            this.Controls.Add(this.SearchRoute);
+            this.Controls.Add(this.searchTo);
+            this.Controls.Add(this.searchFrom);
             this.Controls.Add(this.coordinates);
             this.Controls.Add(this.Points);
             this.Controls.Add(this.Railways);
@@ -262,6 +296,9 @@
         private System.Windows.Forms.CheckBox Railways;
         private System.Windows.Forms.CheckBox Points;
         private System.Windows.Forms.Label coordinates;
+        private System.Windows.Forms.TextBox searchFrom;
+        private System.Windows.Forms.TextBox searchTo;
+        private System.Windows.Forms.Button SearchRoute;
     }
 }
 

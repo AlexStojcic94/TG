@@ -30,6 +30,7 @@ namespace TG
         bool showLandmarks = false;
         static List<String> tables = new List<string>(new string[] {"places", "buildings","points", "landuse", } );
         AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
+        SharpMap.Layers.VectorLayer routingLayer = new SharpMap.Layers.VectorLayer("Routing");
 
         public Form1()
         {
@@ -49,16 +50,7 @@ namespace TG
             roadsLayer.Style.Line.Width = 1;
             roadsLayer.Style.Line.Color = Color.WhiteSmoke;
             _sharpMap.Layers.Add(roadsLayer);
-
-            var queryic = " id in (SELECT id2 FROM pgr_dijkstra('SELECT id, source, target, cost, reverse_cost " +
-                "FROM nis_routing', 314, 1232, false, true))";
-            SharpMap.Layers.VectorLayer routingLayer = new SharpMap.Layers.VectorLayer("Routing");
-            var provajder = new SharpMap.Data.Providers.PostGIS(connString, "nis_routing", "geom_way", "id");
-            provajder.DefinitionQuery = queryic;
-            routingLayer.DataSource = provajder;
-            routingLayer.Style.Line.Width = 1;
-            routingLayer.Style.Line.Color = Color.Red;
-            _sharpMap.Layers.Add(routingLayer);
+            
 
             SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
             waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
@@ -105,6 +97,7 @@ namespace TG
             Map.Image = _sharpMap.GetMap();
 
             initSearch();
+            initRoadSearch();
         }
 
 
@@ -246,6 +239,55 @@ namespace TG
         {
 
         }
+        private void initRoadSearch()
+        {
+            string queryString1 = "select osm_name from nis_routing";
+            List<string> tempList = new List<string>();
+
+            using (var connection = new NpgsqlConnection(connString))
+            {
+                connection.Open();
+
+                var command = new NpgsqlCommand(queryString1, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tempList.Add(LaToCy.CyToLaConverter.Translit(reader[0].ToString()));
+                    }
+                }
+
+                connection.Close();
+            }
+            AutoCompleteStringCollection autoComplete = new AutoCompleteStringCollection();
+            autoComplete.AddRange(tempList.ToArray());
+            searchFrom.AutoCompleteCustomSource = autoComplete;
+            searchTo.AutoCompleteCustomSource = autoComplete;
+        }
+        public string findRoadSource(string name)
+        {
+            string Source = null;
+
+            string queryString1 = "select source from nis_routing where osm_name in ('" + LaToCy.LaToCyConverter.Translit(name) + "','" + name +"')";
+
+            using (var connection = new NpgsqlConnection(connString))
+            {
+                connection.Open();
+
+                var command = new NpgsqlCommand(queryString1, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Source = reader[0].ToString();
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return Source;
+        }
         private void initSearch()
         {
             string queryString1 = "select name from ";
@@ -292,6 +334,29 @@ namespace TG
             pUTM.X = (float)c[0]; pUTM.Y = (float)c[1];
 
             coordinates.Text = pUTM.X + " : " + pUTM.Y;
+        }
+
+        private void SearchRoute_Click(object sender, EventArgs e)
+        {
+            _sharpMap.Layers.Remove(routingLayer);
+            string Source1 = searchFrom.Text != null ? findRoadSource(searchFrom.Text) : null;
+            string Source2 = searchTo.Text != null ? findRoadSource(searchTo.Text) : null;
+
+            if (Source1 != null && Source2 != null)
+            {
+                var queryic = " id in (SELECT id2 FROM pgr_dijkstra('SELECT id, source, target, cost, reverse_cost " +
+                    "FROM nis_routing', "+ Source1 + ", "+ Source2 + ", false, true))";
+
+                var provajder = new SharpMap.Data.Providers.PostGIS(connString, "nis_routing", "geom_way", "id");
+                provajder.DefinitionQuery = queryic;
+                routingLayer.DataSource = provajder;
+                routingLayer.Enabled = true;
+
+                routingLayer.Style.Line.Width = 1;
+                routingLayer.Style.Line.Color = Color.Red;
+                _sharpMap.Layers.Add(routingLayer);
+            }
+            Map.Image = _sharpMap.GetMap();
         }
     }
 }
