@@ -44,6 +44,7 @@
             this.Railways = new System.Windows.Forms.CheckBox();
             this.Points = new System.Windows.Forms.CheckBox();
             this.coordinates = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
@@ -213,11 +214,22 @@
             this.coordinates.Size = new System.Drawing.Size(100, 15);
             this.coordinates.TabIndex = 15;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(522, 9);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 16;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(826, 567);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.coordinates);
             this.Controls.Add(this.Points);
             this.Controls.Add(this.Railways);
@@ -235,7 +247,7 @@
             this.Controls.Add(this.Distance);
             this.Controls.Add(this.Map);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "g";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.Map)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).EndInit();
@@ -262,6 +274,7 @@
         private System.Windows.Forms.CheckBox Railways;
         private System.Windows.Forms.CheckBox Points;
         private System.Windows.Forms.Label coordinates;
+        private System.Windows.Forms.Button button1;
     }
 }
 

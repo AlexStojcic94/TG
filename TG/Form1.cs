@@ -14,6 +14,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
+using SharpMap.Data;
+using NetTopologySuite.Geometries;
+using GeoAPI.Geometries;
+using SharpMap.Data.Providers;
 
 namespace TG
 {
@@ -50,11 +54,11 @@ namespace TG
             roadsLayer.Style.Line.Color = Color.WhiteSmoke;
             _sharpMap.Layers.Add(roadsLayer);
 
-            SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
-            waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
-            waterwaysLayer.Style.Line.Width = 1;
-            waterwaysLayer.Style.Line.Color = Color.Blue;
-            _sharpMap.Layers.Add(waterwaysLayer);
+            //SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
+            //waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
+            //waterwaysLayer.Style.Line.Width = 1;
+            //waterwaysLayer.Style.Line.Color = Color.Blue;
+            //_sharpMap.Layers.Add(waterwaysLayer);
 
             SharpMap.Layers.LabelLayer placesLayer = new SharpMap.Layers.LabelLayer("Places");
             placesLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "places", geomname, idname);
@@ -64,7 +68,6 @@ namespace TG
             placesLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.First;
             placesLayer.Style.Font = new Font(FontFamily.GenericSansSerif, 8);
             _sharpMap.Layers.Add(placesLayer);
-
 
             SharpMap.Layers.VectorLayer buildingsLayer = new SharpMap.Layers.VectorLayer("Buildings");
             buildingsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "buildings", geomname, idname);
@@ -89,6 +92,7 @@ namespace TG
             pointsLayer.Style.Font = new Font(FontFamily.GenericSansSerif, 8);
             pointsLayer.Enabled = false;
             _sharpMap.Layers.Add(pointsLayer);
+
 
             _sharpMap.ZoomToExtents();
 
@@ -156,6 +160,7 @@ namespace TG
             _sharpMap.Center.Y = p.Y;
 
             Map.Image = _sharpMap.GetMap();
+
         }
 
         private void Buildings_CheckedChanged(object sender, EventArgs e)
@@ -281,7 +286,22 @@ namespace TG
             c = transform.MathTransform.Transform(c);
             pUTM.X = (float)c[0]; pUTM.Y = (float)c[1];
 
-            coordinates.Text = pUTM.X + " : " + pUTM.Y;
+            coordinates.Text = pUTM.X + " : " + pUTM.Y;            
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SharpMap.Layers.VectorLayer buildingsLayer = new SharpMap.Layers.VectorLayer("Buildings");
+            //buildingsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "buildings", geomname, idname);
+            SharpMap.Data.Providers.PostGIS prov = new PostGIS(connString, "waterways", geomname, idname);
+            prov.DefinitionQuery = "ST_Intersects(geom, ST_GeomFromText('POLYGON((21.84164191 43.33574271,21.94017554 43.3348687, 21.94498206 43.29727457, 21.85880805 43.29252682, 21.84164191 43.33574271))',3005))";
+            buildingsLayer.DataSource = prov;
+            buildingsLayer.Style.Line.Width = 1;
+            buildingsLayer.Style.Line.Color = Color.Blue;
+            buildingsLayer.Enabled = true;
+            _sharpMap.Layers.Add(buildingsLayer);
+            Map.Image = _sharpMap.GetMap();
+        }
+        
     }
 }
