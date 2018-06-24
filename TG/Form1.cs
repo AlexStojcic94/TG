@@ -28,7 +28,7 @@ namespace TG
         bool showBuilding = false;
         bool showRailways = false;
         bool showLandmarks = false;
-        static List<String> tables = new List<string>(new string[] {"places", "buildings","points", "landuse", "roads", } );
+        static List<String> tables = new List<string>(new string[] {"places", "buildings","points", "landuse", } );
         AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
 
         public Form1()
@@ -45,10 +45,20 @@ namespace TG
             _sharpMap.Layers.Add(landuseLayer);
 
             SharpMap.Layers.VectorLayer roadsLayer = new SharpMap.Layers.VectorLayer("Roads");
-            roadsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "roads", geomname, idname);
+            roadsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "nis_routing", "geom_way", "id");
             roadsLayer.Style.Line.Width = 1;
             roadsLayer.Style.Line.Color = Color.WhiteSmoke;
             _sharpMap.Layers.Add(roadsLayer);
+
+            var queryic = " id in (SELECT id2 FROM pgr_dijkstra('SELECT id, source, target, cost, reverse_cost " +
+                "FROM nis_routing', 314, 1232, false, true))";
+            SharpMap.Layers.VectorLayer routingLayer = new SharpMap.Layers.VectorLayer("Routing");
+            var provajder = new SharpMap.Data.Providers.PostGIS(connString, "nis_routing", "geom_way", "id");
+            provajder.DefinitionQuery = queryic;
+            routingLayer.DataSource = provajder;
+            routingLayer.Style.Line.Width = 1;
+            routingLayer.Style.Line.Color = Color.Red;
+            _sharpMap.Layers.Add(routingLayer);
 
             SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
             waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
