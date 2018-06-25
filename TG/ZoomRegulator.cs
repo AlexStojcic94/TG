@@ -9,7 +9,7 @@ namespace TG
 {
     public class ZoomRegulator
     {
-        private const float ZOOM_FACTOR = 0.3f;
+        private const float ZOOM_FACTOR = 0.35f;
 
         public int zoom_level = 1;
         public bool showBuilding = false;

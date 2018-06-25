@@ -141,6 +141,7 @@
     <Compile Include="Helpers\CoordinateSystem.cs" />
     <Compile Include="LaToCy\LaToCyConverter.cs" />
     <Compile Include="Layers.cs" />
+    <Compile Include="PointsTypes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ZoomRegulator.cs" />
@@ -174,6 +175,9 @@
   <ItemGroup>
     <Content Include="GdalConfiguration.vb" />
     <Content Include="GdalNativeConfiguration.vb" />
+    <Content Include="pic\doctor.png" />
+    <Content Include="pic\hospital.png" />
+    <Content Include="pic\police.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

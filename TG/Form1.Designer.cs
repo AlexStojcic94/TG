@@ -33,12 +33,12 @@
             this.SearchByName = new System.Windows.Forms.TextBox();
             this.ZoomIn = new System.Windows.Forms.Button();
             this.ZoomOut = new System.Windows.Forms.Button();
-            this.Search1 = new System.Windows.Forms.CheckBox();
-            this.Search2 = new System.Windows.Forms.CheckBox();
-            this.Search3 = new System.Windows.Forms.CheckBox();
-            this.Search4 = new System.Windows.Forms.CheckBox();
-            this.Search5 = new System.Windows.Forms.CheckBox();
-            this.Search6 = new System.Windows.Forms.CheckBox();
+            this.Service = new System.Windows.Forms.CheckBox();
+            this.Utility = new System.Windows.Forms.CheckBox();
+            this.Inn = new System.Windows.Forms.CheckBox();
+            this.Transportation = new System.Windows.Forms.CheckBox();
+            this.Cultural = new System.Windows.Forms.CheckBox();
+            this.Tourist = new System.Windows.Forms.CheckBox();
             this.SearchByType = new System.Windows.Forms.TextBox();
             this.Buildings = new System.Windows.Forms.CheckBox();
             this.Railways = new System.Windows.Forms.CheckBox();
@@ -103,71 +103,77 @@
             this.ZoomOut.UseVisualStyleBackColor = true;
             this.ZoomOut.Click += new System.EventHandler(this.ZoomOut_Click);
             // 
-            // Search1
+            // Service
             // 
-            this.Search1.Appearance = System.Windows.Forms.Appearance.Button;
-            this.Search1.AutoSize = true;
-            this.Search1.Location = new System.Drawing.Point(20, 511);
-            this.Search1.Name = "Search1";
-            this.Search1.Size = new System.Drawing.Size(71, 23);
-            this.Search1.TabIndex = 5;
-            this.Search1.Text = "checkBox1";
-            this.Search1.UseVisualStyleBackColor = true;
+            this.Service.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Service.AutoSize = true;
+            this.Service.Location = new System.Drawing.Point(20, 511);
+            this.Service.Name = "Service";
+            this.Service.Size = new System.Drawing.Size(53, 23);
+            this.Service.TabIndex = 5;
+            this.Service.Text = "Service";
+            this.Service.UseVisualStyleBackColor = true;
+            this.Service.CheckedChanged += new System.EventHandler(this.Service_CheckedChanged);
             // 
-            // Search2
+            // Utility
             // 
-            this.Search2.Appearance = System.Windows.Forms.Appearance.Button;
-            this.Search2.AutoSize = true;
-            this.Search2.Location = new System.Drawing.Point(156, 511);
-            this.Search2.Name = "Search2";
-            this.Search2.Size = new System.Drawing.Size(71, 23);
-            this.Search2.TabIndex = 6;
-            this.Search2.Text = "checkBox2";
-            this.Search2.UseVisualStyleBackColor = true;
+            this.Utility.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Utility.AutoSize = true;
+            this.Utility.Location = new System.Drawing.Point(156, 511);
+            this.Utility.Name = "Utility";
+            this.Utility.Size = new System.Drawing.Size(42, 23);
+            this.Utility.TabIndex = 6;
+            this.Utility.Text = "Utility";
+            this.Utility.UseVisualStyleBackColor = true;
+            this.Utility.CheckedChanged += new System.EventHandler(this.Utility_CheckedChanged);
             // 
-            // Search3
+            // Inn
             // 
-            this.Search3.Appearance = System.Windows.Forms.Appearance.Button;
-            this.Search3.AutoSize = true;
-            this.Search3.Location = new System.Drawing.Point(299, 511);
-            this.Search3.Name = "Search3";
-            this.Search3.Size = new System.Drawing.Size(71, 23);
-            this.Search3.TabIndex = 7;
-            this.Search3.Text = "checkBox3";
-            this.Search3.UseVisualStyleBackColor = true;
+            this.Inn.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Inn.AutoSize = true;
+            this.Inn.Location = new System.Drawing.Point(299, 511);
+            this.Inn.Name = "Inn";
+            this.Inn.Size = new System.Drawing.Size(32, 23);
+            this.Inn.TabIndex = 7;
+            this.Inn.Text = "Inn";
+            this.Inn.UseVisualStyleBackColor = true;
+            this.Inn.CheckedChanged += new System.EventHandler(this.Inn_CheckedChanged);
             // 
-            // Search4
+            // Transportation
             // 
-            this.Search4.Appearance = System.Windows.Forms.Appearance.Button;
-            this.Search4.AutoSize = true;
-            this.Search4.Location = new System.Drawing.Point(420, 511);
-            this.Search4.Name = "Search4";
-            this.Search4.Size = new System.Drawing.Size(71, 23);
-            this.Search4.TabIndex = 8;
-            this.Search4.Text = "checkBox4";
-            this.Search4.UseVisualStyleBackColor = true;
+            this.Transportation.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Transportation.AutoSize = true;
+            this.Transportation.Location = new System.Drawing.Point(420, 511);
+            this.Transportation.Name = "Transportation";
+            this.Transportation.Size = new System.Drawing.Size(85, 23);
+            this.Transportation.TabIndex = 8;
+            this.Transportation.Text = "Transportation";
+            this.Transportation.UseVisualStyleBackColor = true;
+            this.Transportation.CheckedChanged += new System.EventHandler(this.Transportation_CheckedChanged);
             // 
-            // Search5
+            // Cultural
             // 
-            this.Search5.Appearance = System.Windows.Forms.Appearance.Button;
-            this.Search5.AutoSize = true;
-            this.Search5.Location = new System.Drawing.Point(563, 511);
-            this.Search5.Name = "Search5";
-            this.Search5.Size = new System.Drawing.Size(71, 23);
-            this.Search5.TabIndex = 9;
-            this.Search5.Text = "checkBox5";
-            this.Search5.UseVisualStyleBackColor = true;
+            this.Cultural.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Cultural.AutoSize = true;
+            this.Cultural.Location = new System.Drawing.Point(563, 511);
+            this.Cultural.Name = "Cultural";
+            this.Cultural.Size = new System.Drawing.Size(52, 23);
+            this.Cultural.TabIndex = 9;
+            this.Cultural.Text = "Cultural";
+            this.Cultural.UseVisualStyleBackColor = true;
+            this.Cultural.CheckedChanged += new System.EventHandler(this.Cultural_CheckedChanged);
             // 
-            // Search6
+            // Tourist
             // 
-            this.Search6.Appearance = System.Windows.Forms.Appearance.Button;
-            this.Search6.AutoSize = true;
-            this.Search6.Location = new System.Drawing.Point(691, 511);
-            this.Search6.Name = "Search6";
-            this.Search6.Size = new System.Drawing.Size(71, 23);
-            this.Search6.TabIndex = 10;
-            this.Search6.Text = "checkBox6";
-            this.Search6.UseVisualStyleBackColor = true;
+            this.Tourist.Appearance = System.Windows.Forms.Appearance.Button;
+            this.Tourist.AutoSize = true;
+            this.Tourist.Location = new System.Drawing.Point(691, 511);
+            this.Tourist.Name = "Tourist";
+            this.Tourist.Size = new System.Drawing.Size(49, 23);
+            this.Tourist.TabIndex = 10;
+            this.Tourist.Text = "Tourist";
+            this.Tourist.UseVisualStyleBackColor = true;
+            this.Tourist.CheckedChanged += new System.EventHandler(this.Tourist_CheckedChanged);
             // 
             // SearchByType
             // 
@@ -227,7 +233,7 @@
             this.intersection.TabIndex = 16;
             this.intersection.Text = "Find Intersection";
             this.intersection.UseVisualStyleBackColor = true;
-            this.intersection.Click += new System.EventHandler(this.button1_Click);
+            this.intersection.Click += new System.EventHandler(this.Intersection_Click);
             // 
             // searchFrom
             // 
@@ -271,12 +277,12 @@
             this.Controls.Add(this.Railways);
             this.Controls.Add(this.Buildings);
             this.Controls.Add(this.SearchByType);
-            this.Controls.Add(this.Search6);
-            this.Controls.Add(this.Search5);
-            this.Controls.Add(this.Search4);
-            this.Controls.Add(this.Search3);
-            this.Controls.Add(this.Search2);
-            this.Controls.Add(this.Search1);
+            this.Controls.Add(this.Tourist);
+            this.Controls.Add(this.Cultural);
+            this.Controls.Add(this.Transportation);
+            this.Controls.Add(this.Inn);
+            this.Controls.Add(this.Utility);
+            this.Controls.Add(this.Service);
             this.Controls.Add(this.ZoomOut);
             this.Controls.Add(this.ZoomIn);
             this.Controls.Add(this.SearchByName);
@@ -299,12 +305,12 @@
         private System.Windows.Forms.TextBox SearchByName;
         private System.Windows.Forms.Button ZoomIn;
         private System.Windows.Forms.Button ZoomOut;
-        private System.Windows.Forms.CheckBox Search1;
-        private System.Windows.Forms.CheckBox Search2;
-        private System.Windows.Forms.CheckBox Search3;
-        private System.Windows.Forms.CheckBox Search4;
-        private System.Windows.Forms.CheckBox Search5;
-        private System.Windows.Forms.CheckBox Search6;
+        private System.Windows.Forms.CheckBox Service;
+        private System.Windows.Forms.CheckBox Utility;
+        private System.Windows.Forms.CheckBox Inn;
+        private System.Windows.Forms.CheckBox Transportation;
+        private System.Windows.Forms.CheckBox Cultural;
+        private System.Windows.Forms.CheckBox Tourist;
         private System.Windows.Forms.TextBox SearchByType;
         private System.Windows.Forms.CheckBox Buildings;
         private System.Windows.Forms.CheckBox Railways;

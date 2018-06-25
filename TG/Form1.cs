@@ -109,7 +109,7 @@ namespace TG
             Map.Image = Layers.layers.recenterMap(dragStartX - e.X + Map.Size.Width / 2, dragStartY - e.Y + Map.Size.Height / 2);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void Intersection_Click(object sender, EventArgs e)
         {
             if(this.intersection.Text == "Find Intersection")
             {
@@ -120,6 +120,7 @@ namespace TG
             else
             {
                 appIntersectionState = false;
+                this.intersection.Text = "Find Intersection";
                 Map.Image = Layers.layers.getIntersection();
             }
         }
@@ -130,6 +131,42 @@ namespace TG
                 Layers.layers.insertIntersectionPoint(e.X, e.Y);
             else
                 Layers.layers.removeIntersectionLayer();
+        }
+
+        private void Service_CheckedChanged(object sender, EventArgs e)
+        {
+            PointsTypes.toggleServiceLayer(Service.Checked);
+            Map.Image = Layers.layers.getMap();
+        }
+
+        private void Utility_CheckedChanged(object sender, EventArgs e)
+        {
+            PointsTypes.toggleUtilityLayer(Utility.Checked);
+            Map.Image = Layers.layers.getMap();
+        }
+
+        private void Inn_CheckedChanged(object sender, EventArgs e)
+        {
+            PointsTypes.toggleInnLayer(Inn.Checked);
+            Map.Image = Layers.layers.getMap();
+        }
+
+        private void Transportation_CheckedChanged(object sender, EventArgs e)
+        {
+            PointsTypes.toggleTransportationLayer(Transportation.Checked);
+            Map.Image = Layers.layers.getMap();
+        }
+
+        private void Cultural_CheckedChanged(object sender, EventArgs e)
+        {
+            PointsTypes.toggleCulturalLayer(Cultural.Checked);
+            Map.Image = Layers.layers.getMap();
+        }
+
+        private void Tourist_CheckedChanged(object sender, EventArgs e)
+        {
+            PointsTypes.toggleTouristLayer(Tourist.Checked);
+            Map.Image = Layers.layers.getMap();
         }
     }
 }

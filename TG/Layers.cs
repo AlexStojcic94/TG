@@ -67,15 +67,7 @@ namespace TG
             railwaysLayer.Enabled = false;
             _sharpMap.Layers.Add(railwaysLayer);
 
-            SharpMap.Layers.LabelLayer pointsLayer = new SharpMap.Layers.LabelLayer("Points");
-            pointsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "points", geomname, idname);
-            pointsLayer.LabelColumn = "name";
-            pointsLayer.Style.CollisionDetection = true;
-            pointsLayer.Style.CollisionBuffer = new SizeF(50, 50);
-            pointsLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.Largest;
-            pointsLayer.Style.Font = new Font(FontFamily.GenericSansSerif, 8);
-            pointsLayer.Enabled = false;
-            _sharpMap.Layers.Add(pointsLayer);
+            PointsTypes.init(_sharpMap);
 
             _sharpMap.ZoomToExtents();
         }
