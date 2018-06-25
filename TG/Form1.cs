@@ -18,6 +18,7 @@ using SharpMap.Data;
 using NetTopologySuite.Geometries;
 using GeoAPI.Geometries;
 using SharpMap.Data.Providers;
+using System.IO;
 
 namespace TG
 {
@@ -142,7 +143,7 @@ namespace TG
                     Layers.layers.insertIntersectionPoint(e.X, e.Y);
                     PictureBox point = new PictureBox();
                     Map.Controls.Add(point);
-                    point.Image = Image.FromFile("C:\\Users\\rneve\\OneDrive\\Documents\\GIS\\TG\\point.png");
+                    point.Image = Image.FromFile(Directory.GetCurrentDirectory().Replace('\\', '/') + "/pic/point.png");
                     point.Location = new System.Drawing.Point(e.X - 10, e.Y - 15);
                     point.Height = 30;
                     point.Width = 20;
