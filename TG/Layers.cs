@@ -20,11 +20,10 @@ namespace TG
         private static string geomname = "geom";
         private static string idname = "gid";
 
-        private static List<String> tables = new List<string>(new string[] { "places", "buildings", "points", "landuse", });
+        private static List<String> tables = new List<string>(new string[] { "places", "buildings", "points", "landuse" });
+        private static List<String> placesTypes = new List<string>(new string[] { "city", "town", "suburb", "village", "neighbourhood", "isolated_dwellin", "locality"  });
         private static SharpMap.Layers.VectorLayer routingLayer = new SharpMap.Layers.VectorLayer("Routing");
-
-        private double MaxArea = 0;
-        private double MinArea = 0;
+        private static SharpMap.Layers.LabelLayer placesLayer = new SharpMap.Layers.LabelLayer("Places");
 
         public bool showBuilding = false;
         public bool showRailways = false;
@@ -50,21 +49,7 @@ namespace TG
             roadsLayer.Style.Line.Color = Color.WhiteSmoke;
             _sharpMap.Layers.Add(roadsLayer);
 
-            //SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
-            //waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
-            //waterwaysLayer.Style.Line.Width = 1;
-            //waterwaysLayer.Style.Line.Color = Color.Blue;
-            //_sharpMap.Layers.Add(waterwaysLayer);
-
-            SharpMap.Layers.LabelLayer placesLayer = new SharpMap.Layers.LabelLayer("Places");
-            placesLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "places", geomname, idname);
-            placesLayer.LabelColumn = "name";
-            placesLayer.Style.CollisionDetection = true;
-            placesLayer.Style.CollisionBuffer = new SizeF(50, 50);
-            placesLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.Largest;
-            placesLayer.Style.Font = new Font(FontFamily.GenericSansSerif, 8);
-            _sharpMap.Layers.Add(placesLayer);
-
+            setPlacesLayer();
 
             SharpMap.Layers.VectorLayer buildingsLayer = new SharpMap.Layers.VectorLayer("Buildings");
             buildingsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "buildings", geomname, idname);
@@ -103,30 +88,7 @@ namespace TG
                 return _layers;
             }
         }
-
-        private void getAreas()
-        {
-
-            //string queryString1 = "select source from nis_routing where osm_name in ('" + LaToCy.LaToCyConverter.Translit(name) + "','" + name + "')";
-
-            //using (var connection = new NpgsqlConnection(connString))
-            //{
-            //    connection.Open();
-
-            //    var command = new NpgsqlCommand(queryString1, connection);
-            //    using (var reader = command.ExecuteReader())
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            Source = reader[0].ToString();
-            //        }
-            //    }
-
-            //    connection.Close();
-            //}
-
-            //return Source;
-        }
+        
 
         public Image getMap()
         {
@@ -230,6 +192,30 @@ namespace TG
             }
 
             return getMap();
+        }
+        public void setPlacesLayer()
+        {
+            _sharpMap.Layers.Remove(placesLayer);
+
+            var queryic = " type in (";
+            for (int i = 0; i < ZoomRegulator.zoomRegulator.zoom_level + 1; ++i)
+            {
+                queryic += "'" + placesTypes[i] + "', ";
+            }
+            queryic = queryic.Remove(queryic.Count() - 2, 2) + ")";
+
+            var provajder = new SharpMap.Data.Providers.PostGIS(connString, "places", geomname, idname);
+            provajder.DefinitionQuery = queryic;
+
+            placesLayer.DataSource = provajder;
+            placesLayer.LabelColumn = "name";
+            placesLayer.Style.CollisionDetection = true;
+            placesLayer.Style.CollisionBuffer = new SizeF(25, 25);
+            placesLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.Largest;
+            placesLayer.Style.Font = new Font(FontFamily.Families.Where(x => x.Name == "Arial").FirstOrDefault(), 14 - ZoomRegulator.zoomRegulator.zoom_level*0.7f, FontStyle.Italic);
+            placesLayer.Style.ForeColor = Color.FromArgb(unchecked((int)0xff071e42));
+            _sharpMap.Layers.Add(placesLayer);
+            
         }
         public string getCoordinates(int X, int Y)
         {
@@ -338,6 +324,7 @@ namespace TG
         public void changeZoom(float zoomFactor)
         {
             _sharpMap.Zoom = _sharpMap.Zoom * zoomFactor;
+            setPlacesLayer();
         }
         public Image getBoxedWaterways()
         {
