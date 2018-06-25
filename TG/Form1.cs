@@ -29,7 +29,7 @@ namespace TG
         private int dragStartY;
         private bool appIntersectionState;
 
-        private void Form1_Load(object sender, EventArgs e){}
+        private void Form1_Load(object sender, EventArgs e) { }
         public Form1()
         {
             InitializeComponent();
@@ -52,14 +52,14 @@ namespace TG
         {
             Map.Image = ZoomRegulator.zoomRegulator.ZoomOut();
         }
-        
+
 
 
         private void Buildings_CheckedChanged(object sender, EventArgs e)
         {
             Map.Image = Layers.layers.changeBuildingsVisibility();
         }
-        
+
         private void Railways_CheckedChanged(object sender, EventArgs e)
         {
             Map.Image = Layers.layers.changeRailwaysVisibility();
@@ -69,7 +69,7 @@ namespace TG
         {
             Map.Image = Layers.layers.changePointsVisibility();
         }
-        
+
         private void initRoadSearch()
         {
             var list = Layers.layers.getRoadNames();
@@ -87,10 +87,10 @@ namespace TG
             allowedTypes.AddRange(list.ToArray());
             SearchByName.AutoCompleteCustomSource = allowedTypes;
         }
-        
+
         private void Map_MouseMove(object sender, MouseEventArgs e)
         {
-            coordinates.Text = Layers.layers.getCoordinates(e.X, e.Y);         
+            coordinates.Text = Layers.layers.getCoordinates(e.X, e.Y);
         }
 
         private void SearchRoute_Click(object sender, EventArgs e)
@@ -100,36 +100,55 @@ namespace TG
 
         private void Map_MouseDown(object sender, MouseEventArgs e)
         {
-            dragStartX = e.X;
-            dragStartY = e.Y;
+                dragStartX = e.X;
+                dragStartY = e.Y;
         }
 
         private void Map_MouseUp(object sender, MouseEventArgs e)
         {
-            Map.Image = Layers.layers.recenterMap(dragStartX - e.X + Map.Size.Width / 2, dragStartY - e.Y + Map.Size.Height / 2);
+                Map.Image = Layers.layers.recenterMap(dragStartX - e.X + Map.Size.Width / 2, dragStartY - e.Y + Map.Size.Height / 2);
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(this.intersection.Text == "Find Intersection")
             {
-                appIntersectionState = true;
-                this.intersection.Text = "OK";
-                Layers.layers.intersectionPoints.RemoveRange(0, Layers.layers.intersectionPoints.Count);
-            }
-            else
-            {
-                appIntersectionState = false;
-                Map.Image = Layers.layers.getIntersection();
+                if (this.intersection.Text == "Find Intersection")
+                { 
+                    appIntersectionState = true;
+                    this.intersection.Text = "OK";
+                    Layers.layers.removeIntersectionLayer();
+                    Layers.layers.intersectionPoints.RemoveRange(0, Layers.layers.intersectionPoints.Count);
+                    Map.Image = Layers.layers.getMap();
+                }
+                else
+                {
+                    appIntersectionState = false;
+                    Map.Image = Layers.layers.getIntersection();
+                    this.intersection.Text = "Find Intersection";
+                    int i = Map.Controls.Count;
+                    for (int j = 0; j < i; j++)
+                    {
+                        Map.Controls.RemoveAt(0);
+                    }
+                }
             }
         }
-
         private void Map_MouseClick(object sender, MouseEventArgs e)
         {
-            if (appIntersectionState)
-                Layers.layers.insertIntersectionPoint(e.X, e.Y);
-            else
-                Layers.layers.removeIntersectionLayer();
+                if (appIntersectionState)
+                {
+                    Layers.layers.insertIntersectionPoint(e.X, e.Y);
+                    PictureBox point = new PictureBox();
+                    Map.Controls.Add(point);
+                    point.Image = Image.FromFile("C:\\Users\\rneve\\OneDrive\\Documents\\GIS\\TG\\point.png");
+                    point.Location = new System.Drawing.Point(e.X - 10, e.Y - 15);
+                    point.Height = 30;
+                    point.Width = 20;
+                    point.BackColor = Color.Transparent;
+                    point.SizeMode = PictureBoxSizeMode.StretchImage;
+                    point.BringToFront();
+                }
         }
     }
 }
