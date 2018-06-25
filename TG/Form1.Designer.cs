@@ -59,8 +59,9 @@
             this.Map.Size = new System.Drawing.Size(802, 362);
             this.Map.TabIndex = 0;
             this.Map.TabStop = false;
-            this.Map.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Map_MouseClick);
+            this.Map.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Map_MouseDown);
             this.Map.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Map_MouseMove);
+            this.Map.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Map_MouseUp);
             // 
             // Distance
             // 
