@@ -27,6 +27,7 @@ namespace TG
         private static AutoCompleteStringCollection allowedTypes = new AutoCompleteStringCollection();
         private int dragStartX;
         private int dragStartY;
+        private bool appIntersectionState;
 
         private void Form1_Load(object sender, EventArgs e){}
         public Form1()
@@ -110,8 +111,25 @@ namespace TG
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Map.Image = Layers.layers.getBoxedWaterways();
+            if(this.intersection.Text == "Find Intersection")
+            {
+                appIntersectionState = true;
+                this.intersection.Text = "OK";
+                Layers.layers.intersectionPoints.RemoveRange(0, Layers.layers.intersectionPoints.Count);
+            }
+            else
+            {
+                appIntersectionState = false;
+                Map.Image = Layers.layers.getIntersection();
+            }
         }
-        
+
+        private void Map_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (appIntersectionState)
+                Layers.layers.insertIntersectionPoint(e.X, e.Y);
+            else
+                Layers.layers.removeIntersectionLayer();
+        }
     }
 }

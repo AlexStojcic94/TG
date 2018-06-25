@@ -29,6 +29,8 @@ namespace TG
         public bool showBuilding = false;
         public bool showRailways = false;
         public bool showPoints = false;
+
+        public List<GeoAPI.Geometries.Coordinate> intersectionPoints = new List<GeoAPI.Geometries.Coordinate>();
         
         SharpMap.Map _sharpMap;
 
@@ -339,19 +341,50 @@ namespace TG
         {
             _sharpMap.Zoom = _sharpMap.Zoom * zoomFactor;
         }
-        public Image getBoxedWaterways()
+        public Image getIntersection()
         {
-            SharpMap.Layers.VectorLayer buildingsLayer = new SharpMap.Layers.VectorLayer("Buildings");
-            //buildingsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "buildings", geomname, idname);
-            SharpMap.Data.Providers.PostGIS prov = new PostGIS(connString, "waterways", geomname, idname);
-            prov.DefinitionQuery = "ST_Intersects(geom, ST_GeomFromText('POLYGON((21.84164191 43.33574271,21.94017554 43.3348687, 21.94498206 43.29727457, 21.85880805 43.29252682, 21.84164191 43.33574271))',3005))";
-            buildingsLayer.DataSource = prov;
-            buildingsLayer.Style.Line.Width = 1;
-            buildingsLayer.Style.Line.Color = Color.Blue;
-            buildingsLayer.Enabled = true;
-            _sharpMap.Layers.Add(buildingsLayer);
+            if (intersectionPoints.Count > 2)
+            {
+                int i = 0;
+                string polygon = "POLYGON((";
+                for(i = 0; i < intersectionPoints.Count; i++)
+                {
+                    polygon += intersectionPoints[i].X + " " + intersectionPoints[i].Y + ",";
+                }
+                polygon += intersectionPoints[0].X + " " + intersectionPoints[0].Y + "))";  
+                string query = "ST_Intersects(geom, ST_GeomFromText('"+polygon+"',3005))";
 
+                SharpMap.Layers.LabelLayer intersectionLayer = new SharpMap.Layers.LabelLayer("Intersection");
+               
+                SharpMap.Data.Providers.PostGIS prov = new PostGIS(connString, "points", geomname, idname);
+                prov.DefinitionQuery = query;
+                intersectionLayer.DataSource = prov;
+                intersectionLayer.LabelColumn = "name";
+              
+                intersectionLayer.Style.ForeColor = Color.DarkOrange;
+                intersectionLayer.Style.CollisionDetection = true;
+                intersectionLayer.Style.CollisionBuffer = new SizeF(50, 50);
+                intersectionLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.Largest;
+                intersectionLayer.Style.Font = new Font(FontFamily.GenericSansSerif, 8);
+                intersectionLayer.Enabled = true;
+                _sharpMap.Layers.Add(intersectionLayer);
+
+                intersectionPoints.RemoveRange(0, intersectionPoints.Count);
+            }
+          
             return getMap();
+        }
+
+        public void insertIntersectionPoint(float X, float Y)
+        {
+            GeoAPI.Geometries.Coordinate pt = _sharpMap.ImageToWorld(new PointF(X,Y));
+            intersectionPoints.Add(pt);
+        }
+        public void removeIntersectionLayer()
+        {
+            var intersection_Layer = _sharpMap.Layers.Where(x => x.LayerName == "Intersection").FirstOrDefault();
+            if (intersection_Layer != null)
+                _sharpMap.Layers.Remove(intersection_Layer);
         }
     }
 }
