@@ -211,11 +211,19 @@ namespace TG
 
             placesLayer.DataSource = provajder;
             placesLayer.LabelColumn = "name";
-            placesLayer.Style.CollisionDetection = true;
-            placesLayer.Style.CollisionBuffer = new SizeF(25, 25);
-            placesLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.Largest;
-            placesLayer.Style.Font = new Font(FontFamily.Families.Where(x => x.Name == "Arial").FirstOrDefault(), 14 - ZoomRegulator.zoomRegulator.zoom_level*0.7f, FontStyle.Italic);
-            placesLayer.Style.ForeColor = Color.FromArgb(unchecked((int)0xff071e42));
+
+            SharpMap.Styles.LabelStyle min = new SharpMap.Styles.LabelStyle();
+            SharpMap.Styles.LabelStyle max = new SharpMap.Styles.LabelStyle();
+            min.CollisionDetection = true;
+            max.CollisionDetection = true;
+            min.CollisionBuffer = new SizeF(25, 25);
+            max.CollisionBuffer = new SizeF(25, 25);
+            min.Font = new Font(FontFamily.Families.Where(x => x.Name == "Arial").FirstOrDefault(), 14 - ZoomRegulator.zoomRegulator.zoom_level * 0.7f, FontStyle.Italic);
+            max.Font = new Font(FontFamily.Families.Where(x => x.Name == "Arial").FirstOrDefault(), 14 - ZoomRegulator.zoomRegulator.zoom_level * 0.7f, FontStyle.Italic);
+            min.ForeColor = Color.DarkGray;
+            max.ForeColor = Color.Black;
+            placesLayer.Theme = new SharpMap.Rendering.Thematics.GradientTheme("population",0,202250,min,max);
+      
             _sharpMap.Layers.Add(placesLayer);
             
         }
