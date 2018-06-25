@@ -14,6 +14,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Npgsql;
+using SharpMap.Data;
+using NetTopologySuite.Geometries;
+using GeoAPI.Geometries;
+using SharpMap.Data.Providers;
 
 namespace TG
 {
@@ -28,8 +32,14 @@ namespace TG
         public Form1()
         {
             InitializeComponent();
+            //SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
+            //waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
+            //waterwaysLayer.Style.Line.Width = 1;
+            //waterwaysLayer.Style.Line.Color = Color.Blue;
+            //_sharpMap.Layers.Add(waterwaysLayer);
 
             Map.Image = Layers.layers.getMap();
+
 
             initSearch();
             initRoadSearch();
@@ -47,6 +57,7 @@ namespace TG
             Map.Image = ZoomRegulator.zoomRegulator.ZoomOut();
         }
         
+
 
         private void Buildings_CheckedChanged(object sender, EventArgs e)
         {
@@ -84,6 +95,7 @@ namespace TG
         private void Map_MouseMove(object sender, MouseEventArgs e)
         {
             coordinates.Text = Layers.layers.getCoordinates(e.X, e.Y);
+            coordinates.Text = pUTM.X + " : " + pUTM.Y;            
         }
 
         private void SearchRoute_Click(object sender, EventArgs e)
@@ -101,5 +113,20 @@ namespace TG
         {
             Map.Image = Layers.layers.recenterMap(dragStartX - e.X + Map.Size.Width / 2, dragStartY - e.Y + Map.Size.Height / 2);
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SharpMap.Layers.VectorLayer buildingsLayer = new SharpMap.Layers.VectorLayer("Buildings");
+            //buildingsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "buildings", geomname, idname);
+            SharpMap.Data.Providers.PostGIS prov = new PostGIS(connString, "waterways", geomname, idname);
+            prov.DefinitionQuery = "ST_Intersects(geom, ST_GeomFromText('POLYGON((21.84164191 43.33574271,21.94017554 43.3348687, 21.94498206 43.29727457, 21.85880805 43.29252682, 21.84164191 43.33574271))',3005))";
+            buildingsLayer.DataSource = prov;
+            buildingsLayer.Style.Line.Width = 1;
+            buildingsLayer.Style.Line.Color = Color.Blue;
+            buildingsLayer.Enabled = true;
+            _sharpMap.Layers.Add(buildingsLayer);
+            Map.Image = _sharpMap.GetMap();
+        }
+        
     }
 }
