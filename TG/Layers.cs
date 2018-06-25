@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using GeoAPI.CoordinateSystems;
 using ProjNet.CoordinateSystems.Transformations;
 using GeoAPI.CoordinateSystems.Transformations;
+using SharpMap.Data.Providers;
 
 namespace TG
 {
@@ -22,10 +23,13 @@ namespace TG
         private static List<String> tables = new List<string>(new string[] { "places", "buildings", "points", "landuse", });
         private static SharpMap.Layers.VectorLayer routingLayer = new SharpMap.Layers.VectorLayer("Routing");
 
+        private double MaxArea = 0;
+        private double MinArea = 0;
+
         public bool showBuilding = false;
         public bool showRailways = false;
         public bool showPoints = false;
-
+        
         SharpMap.Map _sharpMap;
 
         private Layers()
@@ -46,12 +50,11 @@ namespace TG
             roadsLayer.Style.Line.Color = Color.WhiteSmoke;
             _sharpMap.Layers.Add(roadsLayer);
 
-
-            SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
-            waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
-            waterwaysLayer.Style.Line.Width = 1;
-            waterwaysLayer.Style.Line.Color = Color.Blue;
-            _sharpMap.Layers.Add(waterwaysLayer);
+            //SharpMap.Layers.VectorLayer waterwaysLayer = new SharpMap.Layers.VectorLayer("Waterways");
+            //waterwaysLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "waterways", geomname, idname);
+            //waterwaysLayer.Style.Line.Width = 1;
+            //waterwaysLayer.Style.Line.Color = Color.Blue;
+            //_sharpMap.Layers.Add(waterwaysLayer);
 
             SharpMap.Layers.LabelLayer placesLayer = new SharpMap.Layers.LabelLayer("Places");
             placesLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "places", geomname, idname);
@@ -99,6 +102,30 @@ namespace TG
                 }
                 return _layers;
             }
+        }
+
+        private void getAreas()
+        {
+
+            //string queryString1 = "select source from nis_routing where osm_name in ('" + LaToCy.LaToCyConverter.Translit(name) + "','" + name + "')";
+
+            //using (var connection = new NpgsqlConnection(connString))
+            //{
+            //    connection.Open();
+
+            //    var command = new NpgsqlCommand(queryString1, connection);
+            //    using (var reader = command.ExecuteReader())
+            //    {
+            //        while (reader.Read())
+            //        {
+            //            Source = reader[0].ToString();
+            //        }
+            //    }
+
+            //    connection.Close();
+            //}
+
+            //return Source;
         }
 
         public Image getMap()
@@ -217,7 +244,7 @@ namespace TG
             c[0] = p.X; c[1] = p.Y;
             c = transform.MathTransform.Transform(c);
             pUTM.X = (float)c[0]; pUTM.Y = (float)c[1];
-
+            
             return pUTM.X + " : " + pUTM.Y;
         }
         public Image changePointsVisibility()
@@ -311,6 +338,20 @@ namespace TG
         public void changeZoom(float zoomFactor)
         {
             _sharpMap.Zoom = _sharpMap.Zoom * zoomFactor;
+        }
+        public Image getBoxedWaterways()
+        {
+            SharpMap.Layers.VectorLayer buildingsLayer = new SharpMap.Layers.VectorLayer("Buildings");
+            //buildingsLayer.DataSource = new SharpMap.Data.Providers.PostGIS(connString, "buildings", geomname, idname);
+            SharpMap.Data.Providers.PostGIS prov = new PostGIS(connString, "waterways", geomname, idname);
+            prov.DefinitionQuery = "ST_Intersects(geom, ST_GeomFromText('POLYGON((21.84164191 43.33574271,21.94017554 43.3348687, 21.94498206 43.29727457, 21.85880805 43.29252682, 21.84164191 43.33574271))',3005))";
+            buildingsLayer.DataSource = prov;
+            buildingsLayer.Style.Line.Width = 1;
+            buildingsLayer.Style.Line.Color = Color.Blue;
+            buildingsLayer.Enabled = true;
+            _sharpMap.Layers.Add(buildingsLayer);
+
+            return getMap();
         }
     }
 }
