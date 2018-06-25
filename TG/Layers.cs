@@ -67,9 +67,10 @@ namespace TG
             railwaysLayer.Enabled = false;
             _sharpMap.Layers.Add(railwaysLayer);
 
-            PointsTypes.init(_sharpMap);
+            PointsTypes.init(_sharpMap, "");
 
             _sharpMap.ZoomToExtents();
+            
         }
         public static Layers layers
         {
@@ -83,7 +84,10 @@ namespace TG
             }
         }
         
-
+        public double getCurrentZoom()
+        {
+            return _sharpMap.Zoom;
+        }
         public Image getMap()
         {
             return _sharpMap.GetMap();
@@ -339,22 +343,9 @@ namespace TG
                     polygon += intersectionPoints[i].X + " " + intersectionPoints[i].Y + ",";
                 }
                 polygon += intersectionPoints[0].X + " " + intersectionPoints[0].Y + "))";  
-                string query = "ST_Intersects(geom, ST_GeomFromText('"+polygon+"',3005))";
+                string query = " AND ST_Intersects(geom, ST_GeomFromText('"+polygon+"',3005))";
 
-                SharpMap.Layers.LabelLayer intersectionLayer = new SharpMap.Layers.LabelLayer("Intersection");
-               
-                SharpMap.Data.Providers.PostGIS prov = new PostGIS(connString, "points", geomname, idname);
-                prov.DefinitionQuery = query;
-                intersectionLayer.DataSource = prov;
-                intersectionLayer.LabelColumn = "name";
-              
-                intersectionLayer.Style.ForeColor = Color.DarkOrange;
-                intersectionLayer.Style.CollisionDetection = true;
-                intersectionLayer.Style.CollisionBuffer = new SizeF(50, 50);
-                intersectionLayer.MultipartGeometryBehaviour = SharpMap.Layers.LabelLayer.MultipartGeometryBehaviourEnum.Largest;
-                intersectionLayer.Style.Font = new Font(FontFamily.GenericSansSerif, 8);
-                intersectionLayer.Enabled = true;
-                _sharpMap.Layers.Add(intersectionLayer);
+                PointsTypes.init(_sharpMap, query);
 
                 intersectionPoints.RemoveRange(0, intersectionPoints.Count);
             }

@@ -42,12 +42,12 @@
             this.SearchByType = new System.Windows.Forms.TextBox();
             this.Buildings = new System.Windows.Forms.CheckBox();
             this.Railways = new System.Windows.Forms.CheckBox();
-            this.Points = new System.Windows.Forms.CheckBox();
             this.coordinates = new System.Windows.Forms.Label();
             this.intersection = new System.Windows.Forms.Button();
             this.searchFrom = new System.Windows.Forms.TextBox();
             this.searchTo = new System.Windows.Forms.TextBox();
             this.SearchRoute = new System.Windows.Forms.Button();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
@@ -204,17 +204,6 @@
             this.Railways.UseVisualStyleBackColor = true;
             this.Railways.CheckedChanged += new System.EventHandler(this.Railways_CheckedChanged);
             // 
-            // Points
-            // 
-            this.Points.Appearance = System.Windows.Forms.Appearance.Button;
-            this.Points.Location = new System.Drawing.Point(20, 105);
-            this.Points.Name = "Points";
-            this.Points.Size = new System.Drawing.Size(53, 23);
-            this.Points.TabIndex = 14;
-            this.Points.Text = "Objekti";
-            this.Points.UseVisualStyleBackColor = true;
-            this.Points.CheckedChanged += new System.EventHandler(this.Points_CheckedChanged);
-            // 
             // coordinates
             // 
             this.coordinates.AutoSize = true;
@@ -263,17 +252,24 @@
             this.SearchRoute.UseVisualStyleBackColor = true;
             this.SearchRoute.Click += new System.EventHandler(this.SearchRoute_Click);
             // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Location = new System.Drawing.Point(820, 38);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(190, 362);
+            this.propertyGrid1.TabIndex = 19;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(826, 567);
+            this.ClientSize = new System.Drawing.Size(1013, 567);
+            this.Controls.Add(this.propertyGrid1);
             this.Controls.Add(this.intersection);
             this.Controls.Add(this.SearchRoute);
             this.Controls.Add(this.searchTo);
             this.Controls.Add(this.searchFrom);
             this.Controls.Add(this.coordinates);
-            this.Controls.Add(this.Points);
             this.Controls.Add(this.Railways);
             this.Controls.Add(this.Buildings);
             this.Controls.Add(this.SearchByType);
@@ -314,12 +310,12 @@
         private System.Windows.Forms.TextBox SearchByType;
         private System.Windows.Forms.CheckBox Buildings;
         private System.Windows.Forms.CheckBox Railways;
-        private System.Windows.Forms.CheckBox Points;
         private System.Windows.Forms.Label coordinates;
         private System.Windows.Forms.Button intersection;
         private System.Windows.Forms.TextBox searchFrom;
         private System.Windows.Forms.TextBox searchTo;
         private System.Windows.Forms.Button SearchRoute;
+        private System.Windows.Forms.PropertyGrid propertyGrid1;
     }
 }
 

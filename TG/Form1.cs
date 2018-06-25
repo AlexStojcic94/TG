@@ -118,14 +118,12 @@ namespace TG
                 { 
                     appIntersectionState = true;
                     this.intersection.Text = "OK";
-                    Layers.layers.removeIntersectionLayer();
                     Layers.layers.intersectionPoints.RemoveRange(0, Layers.layers.intersectionPoints.Count);
                     Map.Image = Layers.layers.getMap();
                 }
                 else
                 {
                     appIntersectionState = false;
-                this.intersection.Text = "Find Intersection";
                     Map.Image = Layers.layers.getIntersection();
                     this.intersection.Text = "Find Intersection";
                     int i = Map.Controls.Count;
