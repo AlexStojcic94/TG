@@ -318,7 +318,9 @@ namespace TG
         public static List<string> queryPoints(string query)
         {
             var returnList = new List<string>();
-            string fullQuery = "select name, type, gid from points where " + query.Remove(0,4);
+            string fullQuery = "select name, type, gid from points ";
+            if (query!= "")
+                fullQuery = "select name, type, gid from points where " + query.Remove(0,4);
 
             using (var connection = new NpgsqlConnection(connString))
             {
@@ -350,7 +352,33 @@ namespace TG
 
             return returnList;
         }
+        public static string getLabelInfo(string from, string to)
+        {
+            string returnString = "";
+            if (!allTypes.Contains(LaToCy.LaToCyConverter.Translit(from)))
+            {
+                string query = "select ST_Distance((select geom from points where gid = '" + to + "' limit 1), (select geom from points " +
+                    "where name in ('" + from + "','" + LaToCy.LaToCyConverter.Translit(from) + "') limit 1))";
 
+                using (var connection = new NpgsqlConnection(connString))
+                {
+
+                    connection.Open();
+
+                    var command = new NpgsqlCommand(query, connection);
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            returnString = reader[0].ToString();
+                        }
+                    }
+                    connection.Close();
+                }
+                
+            }
+            return returnString;
+        }
 
     }
 }

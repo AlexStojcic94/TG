@@ -219,5 +219,14 @@ namespace TG
             Map.Image = Layers.layers.changeDistance(Distance.Value);
             listBox1.DataSource = Layers.layers.listDispley;
         }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string text = listBox1.SelectedItem.ToString();
+            var splitString = text.Split('-');
+
+            label4.Text = text;
+            label5.Text = Layers.layers.getDisplayDistance(splitString[splitString.Count()-1].Remove(0, 1));
+        }
     }
 }
