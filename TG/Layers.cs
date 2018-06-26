@@ -19,8 +19,12 @@ namespace TG
         private static string connString = "Server=127.0.0.1;Port=5432;User Id=postgres;Password=admin;Database=TG;";
         private static string geomname = "geom";
         private static string idname = "gid";
+        private static string intersectionQuery = "";
+        private static string distanceQuery = "";
+        private static float distance = 0.001f;
+        private static string searchName = "";
+        
 
-        private static List<String> tables = new List<string>(new string[] { "places", "buildings", "points", "landuse" });
         private static List<String> placesTypes = new List<string>(new string[] { "city", "town", "suburb", "village", "neighbourhood", "isolated_dwellin", "locality"  });
         private static SharpMap.Layers.VectorLayer routingLayer = new SharpMap.Layers.VectorLayer("Routing");
         private static SharpMap.Layers.LabelLayer placesLayer = new SharpMap.Layers.LabelLayer("Places");
@@ -28,6 +32,7 @@ namespace TG
         public bool showBuilding = false;
         public bool showRailways = false;
         public bool showPoints = false;
+        public List<string> listDispley;
 
         public List<GeoAPI.Geometries.Coordinate> intersectionPoints = new List<GeoAPI.Geometries.Coordinate>();
         
@@ -92,35 +97,7 @@ namespace TG
         {
             return _sharpMap.GetMap();
         }
-        public List<string> getNames()
-        {
-            string queryString1 = "select name from ";
-            int i = 0;
-            List<string> list = new List<string>();
-
-            using (var connection = new NpgsqlConnection(connString))
-            {
-
-                connection.Open();
-
-                while (i < tables.Count())
-                {
-                    var command = new NpgsqlCommand(queryString1 + tables[i], connection);
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(LaToCy.CyToLaConverter.Translit(reader[0].ToString()));
-                        }
-                    }
-                    i++;
-                }
-                connection.Close();
-
-            }
-
-            return list;
-        }
+        
         public List<string> getRoadNames()
         {
             string queryString1 = "select osm_name from nis_routing";
@@ -239,30 +216,6 @@ namespace TG
             
             return pUTM.X + " : " + pUTM.Y;
         }
-        public Image changePointsVisibility()
-        {
-            var points_Layer = _sharpMap.Layers.Where(x => x.LayerName == "Points").FirstOrDefault();
-            if (points_Layer != null)
-            {
-                if (showPoints == false)
-                {
-                    showPoints = true;
-
-                    if (ZoomRegulator.zoomRegulator.showPoints)
-                    {
-                        points_Layer.Enabled = true;
-                    }
-
-                }
-                else
-                {
-                    showPoints = false;
-                    points_Layer.Enabled = false;
-                }
-            }
-
-            return getMap();
-        }
         public Image changeRailwaysVisibility()
         {
             var railways_Layer = _sharpMap.Layers.Where(x => x.LayerName == "Railways").FirstOrDefault();
@@ -343,16 +296,20 @@ namespace TG
                     polygon += intersectionPoints[i].X + " " + intersectionPoints[i].Y + ",";
                 }
                 polygon += intersectionPoints[0].X + " " + intersectionPoints[0].Y + "))";  
-                string query = " AND ST_Intersects(geom, ST_GeomFromText('"+polygon+"',3005))";
+                intersectionQuery = " AND ST_Intersects(geom, ST_GeomFromText('"+polygon+"',3005))";
 
-                PointsTypes.init(_sharpMap, query);
+                PointsTypes.init(_sharpMap, intersectionQuery + distanceQuery);
+                listDispley = PointsTypes.queryPoints(intersectionQuery + distanceQuery);
 
                 intersectionPoints.RemoveRange(0, intersectionPoints.Count);
             }
           
             return getMap();
         }
-
+        public void queryPoints()
+        {
+            listDispley = PointsTypes.queryPoints(intersectionQuery + distanceQuery);
+        }
         public void insertIntersectionPoint(float X, float Y)
         {
             GeoAPI.Geometries.Coordinate pt = _sharpMap.ImageToWorld(new PointF(X,Y));
@@ -363,6 +320,29 @@ namespace TG
             var intersection_Layer = _sharpMap.Layers.Where(x => x.LayerName == "Intersection").FirstOrDefault();
             if (intersection_Layer != null)
                 _sharpMap.Layers.Remove(intersection_Layer);
+        }
+        public Image SearchPointsByName(string name, float _distance)
+        {
+            _sharpMap.Layers.Remove(PointsTypes.searchLayer);
+            _sharpMap.Layers.Add(PointsTypes.search(name));
+
+            searchName = name;
+            distance = ((float)_distance) / 5000;
+            distanceQuery = PointsTypes.formDistanceQuery(name, distance);
+
+            PointsTypes.init(_sharpMap, intersectionQuery + distanceQuery);
+            listDispley = PointsTypes.queryPoints(intersectionQuery + distanceQuery);
+
+            return getMap();
+        }
+        public Image changeDistance(int _distance)
+        {
+            distance = ((float)_distance) / 5000;
+            distanceQuery = PointsTypes.formDistanceQuery(searchName, distance);
+            PointsTypes.init(_sharpMap, intersectionQuery + distanceQuery);
+            listDispley = PointsTypes.queryPoints(intersectionQuery + distanceQuery);
+
+            return getMap();
         }
     }
 }

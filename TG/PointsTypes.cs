@@ -27,12 +27,16 @@ namespace TG
         public static bool culturalTypeEnabled = false;
         public static bool touristActivityTypeEnabled = false;
 
+        public static List<String> allTypes = new List<string>(new string[] { "police", "hospital", "doctors", "bank", "post_office", "pharmacy", "embassy", "toilets", "drinking_water", "camp_site", "hostel", "hotel", "museum", "grave_yard", "archaeological_s", "memorial", "castle", "monument", "artwork", "arts_centre", "battlefield", "ruins", "place_of_worship", "picnic_site", "viewpoint", "nightclub", "theatre", "cafe", "swimming_pool" });
         public static List<String> serviceTypes = new List<string>(new string[] { "police", "hospital", "doctors", "bank", "post_office", "pharmacy", "embassy" });
         public static List<String> utilityTypes = new List<string>(new string[] { "toilets", "drinking_water" });
         public static List<String> innTypes = new List<string>(new string[] { "camp_site", "hostel", "hotel"});
         public static List<String> transportationTypes = new List<string>(new string[] {"bus_stop", "parking", "bus_station", "taxi" });
         public static List<String> culturalTypes = new List<string>(new string[] { "museum","grave_yard", "archaeological_s", "memorial", "castle", "monument", "artwork", "arts_centre", "battlefield", "ruins", "place_of_worship" });
         public static List<String> touristActivityTypes = new List<string>(new string[] { "picnic_site", "viewpoint", "nightclub", "theatre", "cafe", "swimming_pool" });
+
+        public static SharpMap.Layers.VectorLayer searchLayer;
+        public static List<String> allElementsOfType;
 
         public static List<SharpMap.Layers.VectorLayer> serviceLayersList = new List<SharpMap.Layers.VectorLayer>();
         public static List<SharpMap.Layers.VectorLayer> utilityLayersList = new List<SharpMap.Layers.VectorLayer>();
@@ -68,8 +72,7 @@ namespace TG
                 //pointsLayer.Style.ForeColor = Color.FromArgb(unchecked((int)0xff071e42));
                 pointsLayer.Style.MaxVisible = ZoomRegulator.startZoom * ZoomRegulator.ZOOM_FACTOR * ZoomRegulator.ZOOM_FACTOR * ZoomRegulator.ZOOM_FACTOR;
                 pointsLayer.Enabled = typeEnabled;
-
-                var comp = _sharpMap.Zoom;
+                
                 layersList.Add(pointsLayer);
                 _sharpMap.Layers.Add(pointsLayer);
             }
@@ -165,6 +168,189 @@ namespace TG
             return name;
         }
 
-       
-}
+        public static List<string> getNames()
+        {
+            string queryString1 = "select name from points where type in ('";
+            List<string> list = new List<string>();
+            string delimiter = "', '";
+
+
+            queryString1 += serviceTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            queryString1 += utilityTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            queryString1 += innTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            queryString1 += transportationTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            queryString1 += culturalTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            queryString1 += touristActivityTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+
+            queryString1 = queryString1.Remove(queryString1.Length - delimiter.Length - 1, delimiter.Length) + ")";
+            using (var connection = new NpgsqlConnection(connString))
+            {
+
+                connection.Open();
+
+                var command = new NpgsqlCommand(queryString1, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(LaToCy.CyToLaConverter.Translit(reader[0].ToString()));
+                    }
+                }
+
+                connection.Close();
+            }
+            
+            list = list.Concat(allTypes).ToList();
+
+            return list;
+        }
+
+        public static SharpMap.Layers.VectorLayer search(string name)
+        {
+            searchLayer = new SharpMap.Layers.VectorLayer("search");
+            
+            string query = "and type in ('";
+
+            string delimiter = "', '";
+
+            query += serviceTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += utilityTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += innTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += transportationTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += culturalTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += touristActivityTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query = query.Remove(query.Length - delimiter.Length - 1, delimiter.Length) + ")";
+            var provajder = new SharpMap.Data.Providers.PostGIS(connString, "points", geomname, idname);
+
+            var fullQuery = "name in ('" + name + "', '" + LaToCy.CyToLaConverter.Translit(name) + "') " + query ?? "";
+            if (allTypes.Contains(LaToCy.CyToLaConverter.Translit(name)))
+                fullQuery = " type = '" + LaToCy.CyToLaConverter.Translit(name) + "' and name != '' and name is not null";
+            provajder.DefinitionQuery = fullQuery;
+
+            searchLayer.Style.Symbol = Image.FromFile(Directory.GetCurrentDirectory().Replace('\\', '/') + "/pic/pin.png");
+            searchLayer.Style.SymbolScale = 0.3f;
+            searchLayer.DataSource = provajder;
+            //searchLayer.Style.MaxVisible = ZoomRegulator.startZoom * ZoomRegulator.ZOOM_FACTOR * ZoomRegulator.ZOOM_FACTOR * ZoomRegulator.ZOOM_FACTOR;
+            searchLayer.Enabled = true;
+
+
+
+            return searchLayer;
+        }
+        public static void findAllElementsOfType(string type)
+        {
+            allElementsOfType = new List<string>();
+            string query = "select gid from points where type = '" + type + "' and name != '' and name is not null";
+
+            using (var connection = new NpgsqlConnection(connString))
+            {
+
+                connection.Open();
+
+                var command = new NpgsqlCommand(query, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        allElementsOfType.Add(LaToCy.CyToLaConverter.Translit(reader[0].ToString().Replace("'","''")));
+                    }
+                }
+
+                connection.Close();
+            }
+
+        }
+        public static string formDistanceQuery(string name, float _distance)
+        {
+            if (allTypes.Contains(LaToCy.CyToLaConverter.Translit(name)))
+            {
+                findAllElementsOfType(LaToCy.CyToLaConverter.Translit(name));
+            }
+            else
+            {
+                allElementsOfType = new List<string>();
+                allElementsOfType.Add(name);
+            }
+            string query = "and type in ('";
+
+            string delimiter = "', '";
+
+            query += serviceTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += utilityTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += innTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += transportationTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += culturalTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query += touristActivityTypes.Aggregate((i, j) => i + delimiter + j) + delimiter;
+
+            query = query.Remove(query.Length - delimiter.Length - 1, delimiter.Length) + ")";
+
+            string returnString = " and ( ";
+            foreach (var uniqueName in allElementsOfType)
+            {
+                string namePart = "name in ('" + uniqueName + "', '" + LaToCy.CyToLaConverter.Translit(uniqueName) + "') ";
+                if (allTypes.Contains(LaToCy.CyToLaConverter.Translit(name)))
+                    namePart = "gid =" + uniqueName + " ";
+                returnString += " ST_DWithin(geom, (select geom from points where " + namePart +
+                query + " limit 1)" + " ," + _distance + ")" + " or ";
+            }
+            returnString = returnString.Remove(returnString.Length - 4, 3);
+            returnString += ") ";
+
+            return returnString;
+        }
+        public static List<string> queryPoints(string query)
+        {
+            var returnList = new List<string>();
+            string fullQuery = "select name, type, gid from points where " + query.Remove(0,4);
+
+            using (var connection = new NpgsqlConnection(connString))
+            {
+
+                connection.Open();
+
+                var command = new NpgsqlCommand(fullQuery, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (serviceTypes.Contains(reader[1].ToString()) && serviceTypeEnabled)
+                            returnList.Add(LaToCy.CyToLaConverter.Translit(((reader[0].ToString() != "") ? reader[0].ToString() : "unkown") + " - " + reader[1].ToString() + " - "+ reader[2].ToString()));
+                        if (utilityTypes.Contains(reader[1].ToString()) && utilityTypeEnabled)
+                            returnList.Add(LaToCy.CyToLaConverter.Translit(((reader[0].ToString() != "") ? reader[0].ToString() : "unkown") + " - " + reader[1].ToString() + " - " + reader[2].ToString()));
+                        if (innTypes.Contains(reader[1].ToString()) && innTypeEnabled)
+                            returnList.Add(LaToCy.CyToLaConverter.Translit(((reader[0].ToString() != "") ? reader[0].ToString() : "unkown") + " - " + reader[1].ToString() + " - " + reader[2].ToString()));
+                        if (transportationTypes.Contains(reader[1].ToString()) && transportationTypeEnabled)
+                            returnList.Add(LaToCy.CyToLaConverter.Translit(((reader[0].ToString() != "") ? reader[0].ToString() : "unkown") + " - " + reader[1].ToString() + " - " + reader[2].ToString()));
+                        if (culturalTypes.Contains(reader[1].ToString()) && culturalTypeEnabled)
+                            returnList.Add(LaToCy.CyToLaConverter.Translit(((reader[0].ToString() != "") ? reader[0].ToString() : "unkown") + " - " + reader[1].ToString() + " - " + reader[2].ToString()));
+                        if (touristActivityTypes.Contains(reader[1].ToString()) && touristActivityTypeEnabled)
+                            returnList.Add(LaToCy.CyToLaConverter.Translit(((reader[0].ToString() != "") ? reader[0].ToString() : "unkown") + " - " + reader[1].ToString() + " - " + reader[2].ToString()));
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return returnList;
+        }
+
+
+    }
 }

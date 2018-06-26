@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.Map = new System.Windows.Forms.PictureBox();
             this.Distance = new System.Windows.Forms.TrackBar();
             this.SearchByName = new System.Windows.Forms.TextBox();
@@ -39,7 +40,6 @@
             this.Transportation = new System.Windows.Forms.CheckBox();
             this.Cultural = new System.Windows.Forms.CheckBox();
             this.Tourist = new System.Windows.Forms.CheckBox();
-            this.SearchByType = new System.Windows.Forms.TextBox();
             this.Buildings = new System.Windows.Forms.CheckBox();
             this.Railways = new System.Windows.Forms.CheckBox();
             this.coordinates = new System.Windows.Forms.Label();
@@ -47,7 +47,10 @@
             this.searchFrom = new System.Windows.Forms.TextBox();
             this.searchTo = new System.Windows.Forms.TextBox();
             this.SearchRoute = new System.Windows.Forms.Button();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
@@ -57,7 +60,7 @@
             this.Map.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Map.Location = new System.Drawing.Point(12, 38);
             this.Map.Name = "Map";
-            this.Map.Size = new System.Drawing.Size(802, 362);
+            this.Map.Size = new System.Drawing.Size(802, 355);
             this.Map.TabIndex = 0;
             this.Map.TabStop = false;
             this.Map.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Map_MouseClick);
@@ -69,19 +72,22 @@
             // 
             this.Distance.Location = new System.Drawing.Point(12, 419);
             this.Distance.Maximum = 100;
+            this.Distance.Minimum = 1;
             this.Distance.Name = "Distance";
             this.Distance.Size = new System.Drawing.Size(802, 45);
             this.Distance.TabIndex = 1;
             this.Distance.Value = 2;
+            this.Distance.Scroll += new System.EventHandler(this.Distance_Scroll);
             // 
             // SearchByName
             // 
             this.SearchByName.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.SearchByName.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.SearchByName.Location = new System.Drawing.Point(623, 12);
+            this.SearchByName.Location = new System.Drawing.Point(623, 10);
             this.SearchByName.Name = "SearchByName";
             this.SearchByName.Size = new System.Drawing.Size(191, 20);
             this.SearchByName.TabIndex = 2;
+            this.SearchByName.KeyUp += new System.Windows.Forms.KeyEventHandler(this.SearchByName_KeyUp);
             // 
             // ZoomIn
             // 
@@ -107,11 +113,11 @@
             // 
             this.Service.Appearance = System.Windows.Forms.Appearance.Button;
             this.Service.AutoSize = true;
-            this.Service.Location = new System.Drawing.Point(20, 511);
+            this.Service.Image = ((System.Drawing.Image)(resources.GetObject("Service.Image")));
+            this.Service.Location = new System.Drawing.Point(20, 470);
             this.Service.Name = "Service";
-            this.Service.Size = new System.Drawing.Size(53, 23);
+            this.Service.Size = new System.Drawing.Size(54, 54);
             this.Service.TabIndex = 5;
-            this.Service.Text = "Service";
             this.Service.UseVisualStyleBackColor = true;
             this.Service.CheckedChanged += new System.EventHandler(this.Service_CheckedChanged);
             // 
@@ -119,11 +125,13 @@
             // 
             this.Utility.Appearance = System.Windows.Forms.Appearance.Button;
             this.Utility.AutoSize = true;
-            this.Utility.Location = new System.Drawing.Point(156, 511);
+            this.Utility.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.Utility.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.Utility.Image = ((System.Drawing.Image)(resources.GetObject("Utility.Image")));
+            this.Utility.Location = new System.Drawing.Point(158, 470);
             this.Utility.Name = "Utility";
-            this.Utility.Size = new System.Drawing.Size(42, 23);
+            this.Utility.Size = new System.Drawing.Size(54, 54);
             this.Utility.TabIndex = 6;
-            this.Utility.Text = "Utility";
             this.Utility.UseVisualStyleBackColor = true;
             this.Utility.CheckedChanged += new System.EventHandler(this.Utility_CheckedChanged);
             // 
@@ -131,11 +139,11 @@
             // 
             this.Inn.Appearance = System.Windows.Forms.Appearance.Button;
             this.Inn.AutoSize = true;
-            this.Inn.Location = new System.Drawing.Point(299, 511);
+            this.Inn.Image = ((System.Drawing.Image)(resources.GetObject("Inn.Image")));
+            this.Inn.Location = new System.Drawing.Point(306, 470);
             this.Inn.Name = "Inn";
-            this.Inn.Size = new System.Drawing.Size(32, 23);
+            this.Inn.Size = new System.Drawing.Size(54, 54);
             this.Inn.TabIndex = 7;
-            this.Inn.Text = "Inn";
             this.Inn.UseVisualStyleBackColor = true;
             this.Inn.CheckedChanged += new System.EventHandler(this.Inn_CheckedChanged);
             // 
@@ -143,11 +151,11 @@
             // 
             this.Transportation.Appearance = System.Windows.Forms.Appearance.Button;
             this.Transportation.AutoSize = true;
-            this.Transportation.Location = new System.Drawing.Point(420, 511);
+            this.Transportation.Image = ((System.Drawing.Image)(resources.GetObject("Transportation.Image")));
+            this.Transportation.Location = new System.Drawing.Point(460, 470);
             this.Transportation.Name = "Transportation";
-            this.Transportation.Size = new System.Drawing.Size(85, 23);
+            this.Transportation.Size = new System.Drawing.Size(54, 54);
             this.Transportation.TabIndex = 8;
-            this.Transportation.Text = "Transportation";
             this.Transportation.UseVisualStyleBackColor = true;
             this.Transportation.CheckedChanged += new System.EventHandler(this.Transportation_CheckedChanged);
             // 
@@ -155,11 +163,11 @@
             // 
             this.Cultural.Appearance = System.Windows.Forms.Appearance.Button;
             this.Cultural.AutoSize = true;
-            this.Cultural.Location = new System.Drawing.Point(563, 511);
+            this.Cultural.Image = ((System.Drawing.Image)(resources.GetObject("Cultural.Image")));
+            this.Cultural.Location = new System.Drawing.Point(606, 470);
             this.Cultural.Name = "Cultural";
-            this.Cultural.Size = new System.Drawing.Size(52, 23);
+            this.Cultural.Size = new System.Drawing.Size(54, 54);
             this.Cultural.TabIndex = 9;
-            this.Cultural.Text = "Cultural";
             this.Cultural.UseVisualStyleBackColor = true;
             this.Cultural.CheckedChanged += new System.EventHandler(this.Cultural_CheckedChanged);
             // 
@@ -167,20 +175,13 @@
             // 
             this.Tourist.Appearance = System.Windows.Forms.Appearance.Button;
             this.Tourist.AutoSize = true;
-            this.Tourist.Location = new System.Drawing.Point(691, 511);
+            this.Tourist.Image = ((System.Drawing.Image)(resources.GetObject("Tourist.Image")));
+            this.Tourist.Location = new System.Drawing.Point(748, 470);
             this.Tourist.Name = "Tourist";
-            this.Tourist.Size = new System.Drawing.Size(49, 23);
+            this.Tourist.Size = new System.Drawing.Size(54, 54);
             this.Tourist.TabIndex = 10;
-            this.Tourist.Text = "Tourist";
             this.Tourist.UseVisualStyleBackColor = true;
             this.Tourist.CheckedChanged += new System.EventHandler(this.Tourist_CheckedChanged);
-            // 
-            // SearchByType
-            // 
-            this.SearchByType.Location = new System.Drawing.Point(20, 470);
-            this.SearchByType.Name = "SearchByType";
-            this.SearchByType.Size = new System.Drawing.Size(143, 20);
-            this.SearchByType.TabIndex = 11;
             // 
             // Buildings
             // 
@@ -189,7 +190,7 @@
             this.Buildings.Name = "Buildings";
             this.Buildings.Size = new System.Drawing.Size(53, 23);
             this.Buildings.TabIndex = 12;
-            this.Buildings.Text = "Zgrade";
+            this.Buildings.Text = "Buildings";
             this.Buildings.UseVisualStyleBackColor = true;
             this.Buildings.CheckedChanged += new System.EventHandler(this.Buildings_CheckedChanged);
             // 
@@ -200,7 +201,7 @@
             this.Railways.Name = "Railways";
             this.Railways.Size = new System.Drawing.Size(53, 23);
             this.Railways.TabIndex = 13;
-            this.Railways.Text = "Pruge";
+            this.Railways.Text = "Railways";
             this.Railways.UseVisualStyleBackColor = true;
             this.Railways.CheckedChanged += new System.EventHandler(this.Railways_CheckedChanged);
             // 
@@ -216,7 +217,7 @@
             // 
             // intersection
             // 
-            this.intersection.Location = new System.Drawing.Point(492, 9);
+            this.intersection.Location = new System.Drawing.Point(896, 10);
             this.intersection.Name = "intersection";
             this.intersection.Size = new System.Drawing.Size(105, 23);
             this.intersection.TabIndex = 16;
@@ -228,43 +229,74 @@
             // 
             this.searchFrom.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.searchFrom.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.searchFrom.Location = new System.Drawing.Point(63, 12);
+            this.searchFrom.Location = new System.Drawing.Point(56, 12);
             this.searchFrom.Name = "searchFrom";
-            this.searchFrom.Size = new System.Drawing.Size(100, 20);
+            this.searchFrom.Size = new System.Drawing.Size(156, 20);
             this.searchFrom.TabIndex = 16;
             // 
             // searchTo
             // 
             this.searchTo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.searchTo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.searchTo.Location = new System.Drawing.Point(196, 12);
+            this.searchTo.Location = new System.Drawing.Point(258, 12);
             this.searchTo.Name = "searchTo";
-            this.searchTo.Size = new System.Drawing.Size(100, 20);
+            this.searchTo.Size = new System.Drawing.Size(156, 20);
             this.searchTo.TabIndex = 17;
             // 
             // SearchRoute
             // 
-            this.SearchRoute.Location = new System.Drawing.Point(311, 10);
+            this.SearchRoute.Location = new System.Drawing.Point(430, 10);
             this.SearchRoute.Name = "SearchRoute";
             this.SearchRoute.Size = new System.Drawing.Size(75, 23);
             this.SearchRoute.TabIndex = 18;
-            this.SearchRoute.Text = "Search";
+            this.SearchRoute.Text = "Find route";
             this.SearchRoute.UseVisualStyleBackColor = true;
             this.SearchRoute.Click += new System.EventHandler(this.SearchRoute_Click);
             // 
-            // propertyGrid1
+            // label1
             // 
-            this.propertyGrid1.Location = new System.Drawing.Point(820, 38);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.Size = new System.Drawing.Size(190, 362);
-            this.propertyGrid1.TabIndex = 19;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(17, 15);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(33, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "From:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(229, 15);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(23, 13);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "To:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(560, 14);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(44, 13);
+            this.label3.TabIndex = 22;
+            this.label3.Text = "Search:";
+            // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(832, 38);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(169, 355);
+            this.listBox1.TabIndex = 23;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1013, 567);
-            this.Controls.Add(this.propertyGrid1);
+            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.intersection);
             this.Controls.Add(this.SearchRoute);
             this.Controls.Add(this.searchTo);
@@ -272,7 +304,6 @@
             this.Controls.Add(this.coordinates);
             this.Controls.Add(this.Railways);
             this.Controls.Add(this.Buildings);
-            this.Controls.Add(this.SearchByType);
             this.Controls.Add(this.Tourist);
             this.Controls.Add(this.Cultural);
             this.Controls.Add(this.Transportation);
@@ -307,7 +338,6 @@
         private System.Windows.Forms.CheckBox Transportation;
         private System.Windows.Forms.CheckBox Cultural;
         private System.Windows.Forms.CheckBox Tourist;
-        private System.Windows.Forms.TextBox SearchByType;
         private System.Windows.Forms.CheckBox Buildings;
         private System.Windows.Forms.CheckBox Railways;
         private System.Windows.Forms.Label coordinates;
@@ -315,7 +345,10 @@
         private System.Windows.Forms.TextBox searchFrom;
         private System.Windows.Forms.TextBox searchTo;
         private System.Windows.Forms.Button SearchRoute;
-        private System.Windows.Forms.PropertyGrid propertyGrid1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ListBox listBox1;
     }
 }
 

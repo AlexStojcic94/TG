@@ -53,9 +53,7 @@ namespace TG
         {
             Map.Image = ZoomRegulator.zoomRegulator.ZoomOut();
         }
-
-
-
+        
         private void Buildings_CheckedChanged(object sender, EventArgs e)
         {
             Map.Image = Layers.layers.changeBuildingsVisibility();
@@ -64,11 +62,6 @@ namespace TG
         private void Railways_CheckedChanged(object sender, EventArgs e)
         {
             Map.Image = Layers.layers.changeRailwaysVisibility();
-        }
-
-        private void Points_CheckedChanged(object sender, EventArgs e)
-        {
-            Map.Image = Layers.layers.changePointsVisibility();
         }
 
         private void initRoadSearch()
@@ -83,7 +76,7 @@ namespace TG
 
         private void initSearch()
         {
-            var list = Layers.layers.getNames();
+            var list = PointsTypes.getNames();
 
             allowedTypes.AddRange(list.ToArray());
             SearchByName.AutoCompleteCustomSource = allowedTypes;
@@ -101,14 +94,13 @@ namespace TG
 
         private void Map_MouseDown(object sender, MouseEventArgs e)
         {
-                dragStartX = e.X;
-                dragStartY = e.Y;
+            dragStartX = e.X;
+            dragStartY = e.Y;
         }
 
         private void Map_MouseUp(object sender, MouseEventArgs e)
         {
-                Map.Image = Layers.layers.recenterMap(dragStartX - e.X + Map.Size.Width / 2, dragStartY - e.Y + Map.Size.Height / 2);
-            
+            Map.Image = Layers.layers.recenterMap(dragStartX - e.X + Map.Size.Width / 2, dragStartY - e.Y + Map.Size.Height / 2);
         }
 
         private void Intersection_Click(object sender, EventArgs e)
@@ -125,6 +117,7 @@ namespace TG
                 {
                     appIntersectionState = false;
                     Map.Image = Layers.layers.getIntersection();
+                    listBox1.DataSource = Layers.layers.listDispley;
                     this.intersection.Text = "Find Intersection";
                     int i = Map.Controls.Count;
                     for (int j = 0; j < i; j++)
@@ -134,6 +127,7 @@ namespace TG
                 }
             }
         }
+
         private void Map_MouseClick(object sender, MouseEventArgs e)
         {
                 if (appIntersectionState)
@@ -155,36 +149,75 @@ namespace TG
         {
             PointsTypes.toggleServiceLayer(Service.Checked);
             Map.Image = Layers.layers.getMap();
+            Layers.layers.queryPoints();
+            listBox1.DataSource = Layers.layers.listDispley;
+            initSearch();
+            SearchByName.Clear();
         }
 
         private void Utility_CheckedChanged(object sender, EventArgs e)
         {
             PointsTypes.toggleUtilityLayer(Utility.Checked);
             Map.Image = Layers.layers.getMap();
+            Layers.layers.queryPoints();
+            listBox1.DataSource = Layers.layers.listDispley;
+            initSearch();
+            SearchByName.Clear();
         }
 
         private void Inn_CheckedChanged(object sender, EventArgs e)
         {
             PointsTypes.toggleInnLayer(Inn.Checked);
             Map.Image = Layers.layers.getMap();
+            Layers.layers.queryPoints();
+            listBox1.DataSource = Layers.layers.listDispley;
+            initSearch();
+            SearchByName.Clear();
         }
 
         private void Transportation_CheckedChanged(object sender, EventArgs e)
         {
             PointsTypes.toggleTransportationLayer(Transportation.Checked);
             Map.Image = Layers.layers.getMap();
+            Layers.layers.queryPoints();
+            listBox1.DataSource = Layers.layers.listDispley;
+            initSearch();
+            SearchByName.Clear();
         }
 
         private void Cultural_CheckedChanged(object sender, EventArgs e)
         {
             PointsTypes.toggleCulturalLayer(Cultural.Checked);
             Map.Image = Layers.layers.getMap();
+            Layers.layers.queryPoints();
+            listBox1.DataSource = Layers.layers.listDispley;
+            initSearch();
+            SearchByName.Clear();
         }
 
         private void Tourist_CheckedChanged(object sender, EventArgs e)
         {
             PointsTypes.toggleTouristLayer(Tourist.Checked);
             Map.Image = Layers.layers.getMap();
+            Layers.layers.queryPoints();
+            listBox1.DataSource = Layers.layers.listDispley;
+            initSearch();
+            SearchByName.Clear();
+        }
+
+        private void SearchByName_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.Enter)
+            {
+                Map.Image = Layers.layers.SearchPointsByName(LaToCy.LaToCyConverter.Translit(SearchByName.Text), Distance.Value);
+                listBox1.DataSource = Layers.layers.listDispley;
+            }
+        }
+
+        private void Distance_Scroll(object sender, EventArgs e)
+        {
+            Map.Image = Layers.layers.changeDistance(Distance.Value);
+            listBox1.DataSource = Layers.layers.listDispley;
         }
     }
 }
