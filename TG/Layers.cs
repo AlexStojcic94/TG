@@ -216,6 +216,12 @@ namespace TG
             
             return pUTM.X + " : " + pUTM.Y;
         }
+        public string getRegCoordinates(int X, int Y)
+        {
+            GeoAPI.Geometries.Coordinate p = _sharpMap.ImageToWorld(new PointF(X, Y));
+
+            return p.X.ToString("0.00") + " : " + p.Y.ToString("0.00");
+        }
         public Image changeRailwaysVisibility()
         {
             var railways_Layer = _sharpMap.Layers.Where(x => x.LayerName == "Railways").FirstOrDefault();
@@ -341,6 +347,15 @@ namespace TG
             distanceQuery = PointsTypes.formDistanceQuery(searchName, distance);
             PointsTypes.init(_sharpMap, intersectionQuery + distanceQuery);
             listDispley = PointsTypes.queryPoints(intersectionQuery + distanceQuery);
+
+            return getMap();
+        }
+        public Image findObject(Point point)
+        {
+            GeoAPI.Geometries.Coordinate pt = _sharpMap.ImageToWorld(point);
+            string PointQ = "POINT(" + pt.X + " " + pt.Y + ")";
+            intersectionQuery = " AND ST_DWithin(geom, ST_GeomFromText('" + PointQ + "',3005),0.1)";
+            PointsTypes.init(_sharpMap, distanceQuery);
 
             return getMap();
         }

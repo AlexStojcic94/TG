@@ -51,6 +51,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.coordinatesReg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.Map)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
@@ -288,11 +289,23 @@
             this.listBox1.Size = new System.Drawing.Size(169, 355);
             this.listBox1.TabIndex = 23;
             // 
+            // coordinatesReg
+            // 
+            this.coordinatesReg.AutoSize = true;
+            this.coordinatesReg.Location = new System.Drawing.Point(722, 76);
+            this.coordinatesReg.MaximumSize = new System.Drawing.Size(220, 220);
+            this.coordinatesReg.MinimumSize = new System.Drawing.Size(75, 15);
+            this.coordinatesReg.Name = "coordinatesReg";
+            this.coordinatesReg.Size = new System.Drawing.Size(75, 15);
+            this.coordinatesReg.TabIndex = 24;
+            this.coordinatesReg.Click += new System.EventHandler(this.coordinatesReg_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1013, 567);
+            this.Controls.Add(this.coordinatesReg);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -349,6 +362,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Label coordinatesReg;
     }
 }
 

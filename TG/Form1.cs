@@ -85,6 +85,7 @@ namespace TG
         private void Map_MouseMove(object sender, MouseEventArgs e)
         {
             coordinates.Text = Layers.layers.getCoordinates(e.X, e.Y);
+            coordinatesReg.Text = Layers.layers.getRegCoordinates(e.X, e.Y);
         }
 
         private void SearchRoute_Click(object sender, EventArgs e)
@@ -143,6 +144,10 @@ namespace TG
                     point.SizeMode = PictureBoxSizeMode.StretchImage;
                     point.BringToFront();
                 }
+                else
+            {
+                Map.Image = Layers.layers.findObject(e.Location);
+            }
         }
 
         private void Service_CheckedChanged(object sender, EventArgs e)
@@ -218,6 +223,11 @@ namespace TG
         {
             Map.Image = Layers.layers.changeDistance(Distance.Value);
             listBox1.DataSource = Layers.layers.listDispley;
+        }
+
+        private void coordinatesReg_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
