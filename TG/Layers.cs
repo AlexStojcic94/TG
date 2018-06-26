@@ -359,5 +359,9 @@ namespace TG
 
             return getMap();
         }
+        public string getDisplayDistance(string gid)
+        {
+            return PointsTypes.getLabelInfo(searchName, gid);
+        }
     }
 }
