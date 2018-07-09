@@ -36,6 +36,7 @@ namespace TG
         public static List<String> touristActivityTypes = new List<string>(new string[] { "picnic_site", "viewpoint", "nightclub", "theatre", "cafe", "swimming_pool" });
 
         public static SharpMap.Layers.VectorLayer searchLayer;
+        public static SharpMap.Layers.VectorLayer targetLayer;
         public static List<String> allElementsOfType;
 
         public static List<SharpMap.Layers.VectorLayer> serviceLayersList = new List<SharpMap.Layers.VectorLayer>();
@@ -352,10 +353,11 @@ namespace TG
 
             return returnList;
         }
-        public static string getLabelInfo(string from, string to)
+        public static string getLabelInfo(string from, string to, SharpMap.Map _sharpMap)
         {
             string returnString = "";
-            if (!allTypes.Contains(LaToCy.LaToCyConverter.Translit(from)))
+            var translated = LaToCy.CyToLaConverter.Translit(from);
+            if (!allTypes.Contains(translated) && translated != "")
             {
                 string query = "select ST_Distance((select geom from points where gid = '" + to + "' limit 1), (select geom from points " +
                     "where name in ('" + from + "','" + LaToCy.LaToCyConverter.Translit(from) + "') limit 1))";
@@ -370,13 +372,68 @@ namespace TG
                     {
                         while (reader.Read())
                         {
-                            returnString = reader[0].ToString();
+                            returnString = ((int)(Double.Parse(reader[0].ToString())*111195)).ToString()+"m";
                         }
                     }
                     connection.Close();
                 }
                 
             }
+            _sharpMap.Layers.Remove(targetLayer);
+            if (to != "")
+            {
+                targetLayer = new SharpMap.Layers.VectorLayer("target");
+
+                var provajder = new SharpMap.Data.Providers.PostGIS(connString, "points", geomname, idname);
+
+                provajder.DefinitionQuery = "gid = " + to;
+
+                targetLayer.Style.Symbol = Image.FromFile(Directory.GetCurrentDirectory().Replace('\\', '/') + "/pic/target.png");
+                targetLayer.Style.SymbolScale = 0.3f;
+                targetLayer.Style.SymbolOffset = new PointF(0, -35);
+                targetLayer.DataSource = provajder;
+                //searchLayer.Style.MaxVisible = ZoomRegulator.startZoom * ZoomRegulator.ZOOM_FACTOR * ZoomRegulator.ZOOM_FACTOR * ZoomRegulator.ZOOM_FACTOR;
+                targetLayer.Enabled = true;
+                _sharpMap.Layers.Add(targetLayer);
+            }
+            return returnString;
+        }
+        public static string findPoint(string query)
+        {
+            var returnString = "";
+            string fullQuery = "select gid, type from points ";
+            if (query != "")
+                fullQuery = "select gid, type from points where " + query.Remove(0, 4);
+
+            using (var connection = new NpgsqlConnection(connString))
+            {
+
+                connection.Open();
+
+                var command = new NpgsqlCommand(fullQuery, connection);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (serviceTypes.Contains(reader[1].ToString()) && serviceTypeEnabled)
+                            returnString = reader[0].ToString();
+                        if (utilityTypes.Contains(reader[1].ToString()) && utilityTypeEnabled)
+                            returnString = reader[0].ToString();
+                        if (innTypes.Contains(reader[1].ToString()) && innTypeEnabled)
+                            returnString = reader[0].ToString();
+                        if (transportationTypes.Contains(reader[1].ToString()) && transportationTypeEnabled)
+                            returnString = reader[0].ToString();
+                        if (culturalTypes.Contains(reader[1].ToString()) && culturalTypeEnabled)
+                            returnString = reader[0].ToString();
+                        if (touristActivityTypes.Contains(reader[1].ToString()) && touristActivityTypeEnabled)
+                            returnString = reader[0].ToString();
+                    }
+                }
+
+                connection.Close();
+            }
+
+            
             return returnString;
         }
 

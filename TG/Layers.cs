@@ -350,18 +350,17 @@ namespace TG
 
             return getMap();
         }
-        public Image findObject(Point point)
+        public string findObject(Point point)
         {
             GeoAPI.Geometries.Coordinate pt = _sharpMap.ImageToWorld(point);
             string PointQ = "POINT(" + pt.X + " " + pt.Y + ")";
-            intersectionQuery = " AND ST_DWithin(geom, ST_GeomFromText('" + PointQ + "',3005),0.1)";
-            PointsTypes.init(_sharpMap, distanceQuery);
-
-            return getMap();
+            var placeQuery = " AND ST_DWithin(geom, ST_GeomFromText('" + PointQ + "',3005),0.0001) ";
+            return PointsTypes.findPoint(distanceQuery + placeQuery + intersectionQuery);
+            
         }
         public string getDisplayDistance(string gid)
         {
-            return PointsTypes.getLabelInfo(searchName, gid);
+            return PointsTypes.getLabelInfo(searchName, gid, _sharpMap);
         }
     }
 }

@@ -131,22 +131,34 @@ namespace TG
 
         private void Map_MouseClick(object sender, MouseEventArgs e)
         {
-                if (appIntersectionState)
-                {
-                    Layers.layers.insertIntersectionPoint(e.X, e.Y);
-                    PictureBox point = new PictureBox();
-                    Map.Controls.Add(point);
-                    point.Image = Image.FromFile(Directory.GetCurrentDirectory().Replace('\\', '/') + "/pic/point.png");
-                    point.Location = new System.Drawing.Point(e.X - 10, e.Y - 15);
-                    point.Height = 30;
-                    point.Width = 20;
-                    point.BackColor = Color.Transparent;
-                    point.SizeMode = PictureBoxSizeMode.StretchImage;
-                    point.BringToFront();
-                }
-                else
+            if (appIntersectionState)
             {
-                Map.Image = Layers.layers.findObject(e.Location);
+                Layers.layers.insertIntersectionPoint(e.X, e.Y);
+                PictureBox point = new PictureBox();
+                Map.Controls.Add(point);
+                point.Image = Image.FromFile(Directory.GetCurrentDirectory().Replace('\\', '/') + "/pic/point.png");
+                point.Location = new System.Drawing.Point(e.X - 10, e.Y - 15);
+                point.Height = 30;
+                point.Width = 20;
+                point.BackColor = Color.Transparent;
+                point.SizeMode = PictureBoxSizeMode.StretchImage;
+                point.BringToFront();
+            }
+            else
+            {
+                var gid = Layers.layers.findObject(e.Location);
+                for (int i=0; i< listBox1.Items.Count; ++i)
+                {
+                    var element = listBox1.Items[i];
+                    string text = element.ToString();
+                    var splitString = text.Split('-');
+
+                    if(gid == splitString[splitString.Count() - 1].Remove(0, 1))
+                    {
+                        listBox1.SelectedIndex = i;
+                    }
+                }
+                
             }
         }
 
@@ -235,8 +247,11 @@ namespace TG
             string text = listBox1.SelectedItem.ToString();
             var splitString = text.Split('-');
 
+
+            
             label4.Text = text;
             label5.Text = Layers.layers.getDisplayDistance(splitString[splitString.Count()-1].Remove(0, 1));
+            Map.Image = Layers.layers.getMap();
         }
     }
 }
